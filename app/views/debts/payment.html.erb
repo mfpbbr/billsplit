@@ -1,0 +1,27 @@
+<h2>Make a Payment</h2>
+
+<form action="<%= debts_url %>" method="post">
+    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+    
+    <select name="debt[debtor_id]">
+        <option value="">Choose Friend You Want to Pay: </option>
+        <% @user.friends.each do |friend| %>   
+          <option value="<%= friend.id %>"><%= friend.username %></option>
+        <% end %>
+        
+        <% @user.inverse_friends.each do |inverse_friend| %>   
+          <option value="<%= inverse_friend.id %>"><%= inverse_friend.username %></option>
+        <% end %>
+    </select>
+    <br>
+    <input type="text" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
+    <br>
+    <input type="number" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
+    <br>
+    <input type="submit" value="Submit Payment">
+</form>
+
+<br>
+<%= link_to "Back to Dashboard (do not make a new payment)", root_url %>
+<br>
+<br>

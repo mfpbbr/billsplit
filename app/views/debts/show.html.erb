@@ -1,0 +1,20 @@
+<h2><%= @debt.is_a_payment == true ? "Payment: $" : "Money Owed: $" %>
+    <%= @debt.amount %></h2>
+
+Created at: <%= @debt.created_at %>
+<br>
+<%= @debt.is_a_payment == true ? "" : "Bill number: #{@debt.bill.id}" %>
+<br>
+<%= @debt.is_a_payment == true ? "" : "Bill description: #{@debt.bill.description}" %>
+<br>
+Note/Memo: <%= @debt.memo if @debt.memo %>
+<br>
+Amount: $<%= @debt.amount %>
+<br>
+Recipient/Debtor: <%= @debt.debtor.username %>
+<br>
+Sender/Creditor: <%= @debt.creditor.username %>
+<br>
+<br>
+
+<%= link_to "Back to Dashboard", root_url %>

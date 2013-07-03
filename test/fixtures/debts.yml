@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  bill_id: 1
+  debtor_id: 1
+  creditor_id: 1
+  amount: 1
+  is_a_payment: false
+
+two:
+  bill_id: 1
+  debtor_id: 1
+  creditor_id: 1
+  amount: 1
+  is_a_payment: false

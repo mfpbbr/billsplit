@@ -1,0 +1,87 @@
+<h2><%= @user.username %>'s Expense History</h2>
+<h4>You owe: $<%= @user.money_owed_to_friends %>
+    <br>
+    You are owed: $<%= @user.money_owed_by_friends %>
+</h4>
+
+<h5><a href="#chronological">See Chronological Expense History</a>
+<br>
+<%= link_to "Back to Dashboard", "/" %></h5>
+
+<h4>Bills:</h4>
+You have <%= @user.bills.length %> bills.
+<ul>
+<% @debts.each do |debt| %>
+    <% next if debt.bill_id == nil %>
+    <li>
+    <%= debt.creditor.username %> lent you $<%= debt.amount %>. <%= debt.created_at %>
+    <%= link_to "Bill id: #{debt.bill.id}", bill_url(debt.bill) %>
+    </li>
+
+<% end %>
+</ul>
+<h4>Money You Have Lent:</h4>
+You have lent money <%= @user.invoices.length %> times.
+<ul>
+<% @user.invoices.uniq.each do |invoice| %>
+
+    <% invoice.debts.each do |debt| %>
+    <li>
+    You lent <%= debt.debtor.username %> $<%= debt.amount %>. 
+    <%= link_to "Bill id: #{debt.bill.id}", bill_url(debt.bill) %>
+    </li>
+    <% end %>
+
+<% end %>
+</ul>
+
+<h4>Payments Sent:</h4>
+You have sent <%= @user.payments_sent.length %> payments.
+<ul>
+    <% @user.payments_sent.each do |payment| %>
+    <li>
+        You sent <%= payment.debtor.username %> a payment of $<%= payment.amount %>.
+        <%= link_to "Payment id: #{payment.id}", debt_url(payment) %>
+    </li>
+    <% end %>
+</ul>
+
+<h4>Payments Received:</h4>
+
+You have received <%= @user.payments_received.length %> payments.
+<ul>
+    <% @user.payments_received.each do |payment| %>
+    <li>
+        <%= payment.creditor.username %> sent you a payment of $<%= payment.amount %>.
+        <%= link_to "Payment id: #{payment.id}", debt_url(payment) %>
+    </li>
+    <% end %>
+</ul>
+
+<br>
+<br>
+
+<div id="chronological">
+<h3>Chronological History</h3>
+<% @history.each do |h| %>
+<li>
+    <strong><%= h.created_at.strftime("%b %d") %></strong>:
+    <%= h.creditor.username %> 
+    <%= h.is_a_payment == true ? "made a payment of $" : "lent $" %> 
+    <%= h.amount %>
+    to
+    <%= h.debtor.username %>
+    
+    <% if h.is_a_payment == true %>
+        <%=link_to "Payment id: #{h.id}", debt_url(h)%>
+    <% else %>
+        <%=link_to "Bill id: #{h.bill_id}", bill_url(h.bill)%>
+    <% end %>
+
+</li>
+<% end %>
+</ul>
+</div>
+<%= link_to "Back to Dashboard", root_url %>
+<br>
+<br>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SessionsTemplate</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  
+  <%= flash[:notice] if flash[:notice] %>
+  <%= yield %>
+
+
+  <div>
+    <%= button_to "Logout", session_path, :method => "delete" %>
+    Current User: <%= current_user %>
+    Session Token: <%= session[:session_token] %>
+  </div>
+  
+  <center><h6><a href="mailto:beldac@gmail.com?Subject=BillSplit" target="_top">
+    Email Feedback</a></h6></center>
+</body>
+</html>

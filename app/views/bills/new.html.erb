@@ -1,0 +1,49 @@
+<h2>Add A Bill</h2>
+
+<form action="<%= bills_url %>" method="post">
+    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+    <input type="text" name="bill[description]" value="<%= @bill.description %>" placeholder="Bill Description">
+    <br>
+    <input type="number" name="bill[total_amount]" value="<%= @bill.total_amount %>" placeholder="Total Amount">
+    <br>
+    <br>
+    <select name="bill[guests][][user_id]">
+        <option value="<%= @user.id %>">You</option>
+        <% @user.friends.each do |friend| %>   
+          <option value="<%= friend.id %>"><%= friend.username %></option>
+        <% end %>
+        
+        <% @user.inverse_friends.each do |inverse_friend| %>   
+          <option value="<%= inverse_friend.id %>"><%= inverse_friend.username %></option>
+        <% end %>
+    </select>
+    <br>
+    
+    <input type="number" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
+    <input type="number" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+    <br>
+    <br>
+    <select name="bill[guests][][user_id]">
+        <option value="">Friend Involved in Bill: </option>
+        <% @user.friends.each do |friend| %>   
+          <option value="<%= friend.id %>"><%= friend.username %></option>
+        <% end %>
+        
+        <% @user.inverse_friends.each do |inverse_friend| %>   
+          <option value="<%= inverse_friend.id %>"><%= inverse_friend.username %></option>
+        <% end %>
+    </select>
+    <br>
+    
+    <input type="number" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
+    <input type="number" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+
+    <br>
+    <input type="submit" value="Add Bill">
+</form>
+
+<br>
+<%= link_to "Back to Dashboard (do not add a new bill)", root_url %>
+<br>
+<br>

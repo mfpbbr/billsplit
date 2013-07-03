@@ -1,0 +1,36 @@
+<h2><%= @user.username %>'s Dashboard</h2>
+<br>
+<strong><%= "You are all settled up!" if @user.settled_up? %></strong>
+You owe: $<%= @user.money_owed_to_friends %>
+<br>
+You are owed: $<%= @user.money_owed_by_friends %>
+<br>
+<br>
+<strong><%= link_to "Add a Bill", new_bill_url %></strong>
+<br>
+<br>
+<strong><%= link_to "Make a Payment", new_debt_url %></strong>
+<br>
+<br>
+<%= link_to "All Expenses", bills_url %>
+<br>
+<br>
+<%= link_to "Your Account", user_url(@user) %>
+<h4>Your Friends:</h4>
+<ul>
+    <% @friends.each do |friend| %>
+        <li>
+            <%= link_to "#{friend.username}", friend_url(friend) %>
+        </li>
+    <% end %>
+
+    <% @inverse_friends.each do |friend| %>
+        <li>
+            <%= link_to "#{friend.username}", friend_url(friend) %>
+        </li>
+    <% end %>
+</ul>
+
+<%= render :partial => "add_friend" %>
+<br>
+<br>

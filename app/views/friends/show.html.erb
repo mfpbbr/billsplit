@@ -1,0 +1,79 @@
+<script id="listItems">
+  <%= @history.to_json.html_safe %>
+</script>
+
+<h2>Your expenses with <%= @friend.username %></h2>
+<h3><%= @debt_to_friend > 0 ? "You owe #{@friend.username}: $" : "#{@friend.username} owes you: $" %>
+    <%= @debt_to_friend.abs %></h3>
+
+<ul id="expenses">
+<% @history.each do |h| %>
+<li>
+    <strong><%= h.created_at.strftime("%b %d %Y") %></strong>:
+    
+    <%= h.creditor.username %> 
+    <%= h.is_a_payment == true ? "made a payment of $" : "lent $" %> 
+    <%= h.amount %>
+    to
+    <%= h.debtor.username %>
+    
+    <% if h.is_a_payment == true %>
+        <a href="#" id="<%= h.id %>" class="payment" data-list-shown="false">Payment id: <%= h.id %></a>
+    <% else %>
+        <a href="#" id="<%= h.bill_id %>" class="bill" data-list-shown="false">Bill id: <%= h.bill_id %></a>
+    <% end %>
+</li>
+<% end %>
+</ul>
+
+<br>
+<%= link_to "Back to Dashboard", root_url %>
+<br>
+<br>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    HISTORY = JSON.parse($("#listItems").html());
+    
+    $(".payment").click(function(event) {
+        event.preventDefault();
+        var payment_id = $(event.target).attr("id");
+
+        for(var i = 0; i < HISTORY.length; i++) {
+            if(HISTORY[i].id == payment_id) {
+                var result = HISTORY[i];
+                break;
+            }
+        }
+
+        if ($(event.target).attr("data-list-shown") === "false") {
+          show(event, result);
+        } else {
+          hide(event, result);
+        }
+    });
+    
+    $(".bill").click(function(event) {
+        event.preventDefault();
+        console.log(event.target);
+        $(event.target).after("Bill Details!");
+    });
+    
+    var show = function(event, result) {
+        console.log(result);
+      var renderedContent = "Memo: " + result.memo + " Amount: $" + result.amount;
+      var index = $(event.target).attr("id")
+
+      $(event.target).attr("data-list-shown", "true");
+      $(event.target).parent().append(renderedContent);
+
+    };
+
+    var hide = function(event, list) {
+      console.log("Need to hide.");
+      $(event.target).parent().find("div").remove();
+      $(event.target).attr("data-list-shown", "false");
+    };
+});
+</script>
