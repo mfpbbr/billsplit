@@ -72,14 +72,20 @@ $(document).ready(function() {
           }
         });
     });
-    
+        
     var showBill = function(event, result) {
-        //trying to get more bill information
-        console.log(result.debts[0].amount); 
+        //try to include more bill information
+
+        var guestInfo = "";
+        result.guests.forEach(function(guest){
+                       guestInfo += guest.username + " paid $" + guest.amount_paid + ", should have paid $" + guest.amount_should_have_paid + "<br>"
+        });
+         
       var $div = $("<div></div>");
       $div.attr("id", "details-"+ result.id)
       var billDetails = "<br>Bill Details<br>Description: " + result.description + "<br>Total Amount: $" + result.total_amount + "<br><br>";
       $div.append(billDetails);
+      $div.append(guestInfo)
                 
       $(event.target).after($div);
       $(event.target).attr("data-list-shown", "true");
@@ -89,7 +95,7 @@ $(document).ready(function() {
     var show = function(event, result) {
       var index = $(event.target).attr("id")
         
-      var renderedContent = "<br>Memo: " + result.memo + "<br>" + "Amount: $" + result.amount + "<br><br>";
+      var renderedContent = "<br>Payment Note: " + result.memo + "<br>" + "Amount: $" + result.amount + "<br><br>";
       
       var $div = $("<div></div>")
       $div.attr("id", "details-"+ result.id)

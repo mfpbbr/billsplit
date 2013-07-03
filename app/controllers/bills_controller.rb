@@ -12,7 +12,7 @@ class BillsController < ApplicationController
     
     respond_to do |format|
       format.html { render :show }
-      format.json { render :json => @bill.to_json(:include => :debts) }
+      format.json { render :json => @bill.to_json(:include => [:debts, :guests]) }
     end
   end
   

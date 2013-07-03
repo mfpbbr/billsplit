@@ -47,7 +47,7 @@ class Bill < ActiveRecord::Base
     :allow_destroy => true
     
   validates :total_amount, :description, :presence => true
-    
+      
   def self.calculate(bill_id, bill_total, guests_params)
     return "What users paid does not match bill total." if self.correct_input(bill_total, guests_params) == false
     
@@ -55,6 +55,8 @@ class Bill < ActiveRecord::Base
     
     guests_params.each do |guest|
       new_guest = Player.new(guest[:user_id], guest[:amount_paid].to_i, guest[:amount_should_have_paid].to_i)
+      new_guest_username = User.find(guest[:user_id]).username
+      Guest.create!(:username => new_guest_username, :bill_id => bill_id, :user_id => guest[:user_id], :amount_paid => guest[:amount_paid].to_i, :amount_should_have_paid => guest[:amount_should_have_paid].to_i)
       guests_array.push(new_guest)
     end
     

@@ -9,12 +9,24 @@ Created at: <%= @bill.created_at %>, by <%= link_to "#{@bill.user.username}", us
 <br>
 Updated at: <%= @bill.updated_at %>
 <br>
+<br>
+<strong>Details:</strong>
 <ul>
-<% @bill.debts.each do |debt| %>
-    <li>
-        <%= debt.debtor.username %> owes <%= debt.creditor.username %> $<%= debt.amount %>.
-    </li>
-<% end %>
+    <% @bill.guests.each do |guest| %>
+        <li>
+            <%= guest.user.username %> paid $<%= guest.amount_paid %>. 
+            <%= guest.user.username %> should have paid $<%= guest.amount_should_have_paid %>.
+            <br>
+        </li>
+    <% end %>
+</ul>
+<strong>Debt Summary:</strong>
+<ul>
+    <% @bill.debts.each do |debt| %>
+        <li>
+            <%= debt.debtor.username %> owes <%= debt.creditor.username %> $<%= debt.amount %>.
+        </li>
+    <% end %>
 </ul>
 
 <br>
