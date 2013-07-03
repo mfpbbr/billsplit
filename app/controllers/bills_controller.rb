@@ -38,9 +38,28 @@ class BillsController < ApplicationController
   end
   
   def edit
+    @bill = Bill.find(params[:id])
+    @user = current_user
+    
+    respond_to do |format|
+      format.html { render :edit }
+      format.json { render :json => @bill.to_json(:include => [:debts, :guests]) }
+    end
   end 
   
   def update
+    @bill = Bill.find(params[:id])
+    @bill.debts.destroy_all
+    @bill.guests.destroy_all
+    debts_count = Bill.calculate(params[:id], params[:bill][:total_amount].to_i, params[:bill][:guests])
+    
+    if @bill.update_attributes(:description => params[:bill][:description], :total_amount => params[:bill][:total_amount])
+      flash[:notice] = "Bill successfully updated."
+      redirect_to bill_url(@bill)
+    else
+      flash[:notice] = "Unable to edit bill."
+      render :edit
+    end
   end
 
 end

@@ -1,9 +1,9 @@
-<h2>Bill Show Page</h2>
+<h2>Bill Page</h2>
 <strong>Total Amount: $<%= @bill.total_amount %></strong>
 <br>
 Description: <%= @bill.description %>
 <br>
-Bill ID: <%= @bill.id %>
+Bill id: <%= @bill.id %>
 <br>
 Created at: <%= @bill.created_at %>, by <%= link_to "#{@bill.user.username}", user_url(@bill.user) %>
 <br>
@@ -29,6 +29,8 @@ Updated at: <%= @bill.updated_at %>
     <% end %>
 </ul>
 
+<%= link_to "Edit this Bill", edit_bill_url(@bill) %>
+<br>
 <br>
 <%= link_to "Back to Your Bill Index", bills_url %>
 <br>

@@ -21,6 +21,7 @@
         <a href="#" id="<%= h.id %>" class="payment" data-list-shown="false">Payment id: <%= h.id %></a>
     <% else %>
         <a href="#" id="<%= h.bill_id %>" class="bill" data-list-shown="false">Bill id: <%= h.bill_id %></a>
+        <%= link_to "Edit this bill", edit_bill_url(h.bill) %>
     <% end %>
 </li>
 <% end %>
@@ -85,7 +86,7 @@ $(document).ready(function() {
       $div.attr("id", "details-"+ result.id)
       var billDetails = "<br>Bill Details<br>Description: " + result.description + "<br>Total Amount: $" + result.total_amount + "<br><br>";
       $div.append(billDetails);
-      $div.append(guestInfo)
+      $div.append(guestInfo + "<br>");
                 
       $(event.target).after($div);
       $(event.target).attr("data-list-shown", "true");

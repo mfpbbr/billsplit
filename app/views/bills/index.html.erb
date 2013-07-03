@@ -167,7 +167,7 @@ $(document).ready(function() {
       $div.attr("id", "details-"+ result.id)
       var billDetails = "<br>Bill Details<br>Description: " + result.description + "<br>Total Amount: $" + result.total_amount + "<br><br>";
       $div.append(billDetails);
-      $div.append(guestInfo)
+      $div.append(guestInfo + "<br>");
                 
       $(event.target).after($div);
       $(event.target).attr("data-list-shown", "true");
