@@ -1,3 +1,7 @@
+<script id="listItems">
+  <%= @history.to_json.html_safe %>
+</script>
+
 <h2><%= @user.username %>'s Expense History</h2>
 <h4>You owe: $<%= @user.money_owed_to_friends %>
     <br>
@@ -14,9 +18,11 @@ You have <%= @user.bills.length %> bills.
 <% @debts.each do |debt| %>
     <% next if debt.bill_id == nil %>
     <li>
-    <%= debt.creditor.username %> lent you $<%= debt.amount %>. <%= debt.created_at %>
-    <%= link_to "Bill id: #{debt.bill.id}", bill_url(debt.bill) %>
-    </li>
+    <strong><%= debt.created_at.strftime("%b %d %Y") %></strong>:
+    <%= debt.creditor.username %> lent you $<%= debt.amount %>.
+    
+    <a href="#" id="<%= debt.bill_id %>" class="bill" data-list-shown="false">Bill id: <%= debt.bill_id %></a>
+</li>
 
 <% end %>
 </ul>
@@ -27,8 +33,9 @@ You have lent money <%= @user.invoices.length %> times.
 
     <% invoice.debts.each do |debt| %>
     <li>
+    <strong><%= debt.created_at.strftime("%b %d %Y") %></strong>:
     You lent <%= debt.debtor.username %> $<%= debt.amount %>. 
-    <%= link_to "Bill id: #{debt.bill.id}", bill_url(debt.bill) %>
+    <a href="#" id="<%= debt.bill_id %>" class="bill" data-list-shown="false">Bill id: <%= debt.bill_id %></a>
     </li>
     <% end %>
 
@@ -40,8 +47,9 @@ You have sent <%= @user.payments_sent.length %> payments.
 <ul>
     <% @user.payments_sent.each do |payment| %>
     <li>
+        <strong><%= payment.created_at.strftime("%b %d %Y") %></strong>:
         You sent <%= payment.debtor.username %> a payment of $<%= payment.amount %>.
-        <%= link_to "Payment id: #{payment.id}", debt_url(payment) %>
+        <a href="#" id="<%= payment.id %>" class="payment" data-list-shown="false">Payment id: <%= payment.id %></a>
     </li>
     <% end %>
 </ul>
@@ -52,8 +60,9 @@ You have received <%= @user.payments_received.length %> payments.
 <ul>
     <% @user.payments_received.each do |payment| %>
     <li>
+        <strong><%= payment.created_at.strftime("%b %d %Y") %></strong>:
         <%= payment.creditor.username %> sent you a payment of $<%= payment.amount %>.
-        <%= link_to "Payment id: #{payment.id}", debt_url(payment) %>
+        <a href="#" id="<%= payment.id %>" class="payment" data-list-shown="false">Payment id: <%= payment.id %></a>
     </li>
     <% end %>
 </ul>
@@ -73,9 +82,9 @@ You have received <%= @user.payments_received.length %> payments.
     <%= h.debtor.username %>
     
     <% if h.is_a_payment == true %>
-        <%=link_to "Payment id: #{h.id}", debt_url(h)%>
+        <a href="#" id="<%= h.id %>" class="payment" data-list-shown="false">Payment id: <%= h.id %></a>
     <% else %>
-        <%=link_to "Bill id: #{h.bill_id}", bill_url(h.bill)%>
+        <a href="#" id="<%= h.bill_id %>" class="bill" data-list-shown="false">Bill id: <%= h.bill_id %></a>
     <% end %>
 
 </li>
@@ -85,3 +94,79 @@ You have received <%= @user.payments_received.length %> payments.
 <%= link_to "Back to Dashboard", root_url %>
 <br>
 <br>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    HISTORY = JSON.parse($("#listItems").html());
+    
+    $(".payment").click(function(event) {
+        event.preventDefault();
+        var payment_id = $(event.target).attr("id");
+
+        for(var i = 0; i < HISTORY.length; i++) {
+            if(HISTORY[i].id == payment_id) {
+                var result = HISTORY[i];
+                break;
+            }
+        }
+
+        if ($(event.target).attr("data-list-shown") === "false") {
+          show(event, result);
+        } else {
+          hide(event, result);
+        }
+    });
+    
+    $(".bill").click(function(event) {
+        event.preventDefault();
+        
+        $.ajax({
+          url: "/bills/" + event.target.id + ".json",
+          type: "get",
+          success: function (billData) {
+            var result = billData;
+            
+            if ($(event.target).attr("data-list-shown") === "false") {
+              showBill(event, result);
+            } else {
+              hide(event, result);
+            }
+          }
+        });
+    });
+    
+    var show = function(event, result) {
+      var index = $(event.target).attr("id")
+        
+      var renderedContent = "<br>Memo: " + result.memo + "<br>" + "Amount: $" + result.amount + "<br><br>";
+      
+      var $div = $("<div></div>")
+      $div.attr("id", "details-"+ result.id)
+      $div.append(renderedContent);
+
+      $(event.target).attr("data-list-shown", "true");
+      $(event.target).parent().append($div);
+    };
+
+    var hide = function(event, list) {
+      $(event.target).parent().find("div").remove();
+      $(event.target).attr("data-list-shown", "false");
+    };
+    
+    var showBill = function(event, result) {
+        //trying to get more bill information
+        console.log(result.debts[0].amount); 
+      var $div = $("<div></div>");
+      $div.attr("id", "details-"+ result.id)
+      var billDetails = "<br>Bill Details<br>Description: " + result.description + "<br>Total Amount: $" + result.total_amount + "<br><br>";
+      $div.append(billDetails);
+                
+      $(event.target).after($div);
+      $(event.target).attr("data-list-shown", "true");
+      $(event.target).parent().append($div);
+    };
+    
+});
+</script>

@@ -2,7 +2,6 @@ class BillsController < ApplicationController
   def index
     @user = current_user
     @debts = current_user.debts
-    @credits = current_user.debts
     @history = current_user.get_history
     
     render :index
@@ -10,7 +9,11 @@ class BillsController < ApplicationController
   
   def show
     @bill = Bill.find(params[:id])
-    render :show
+    
+    respond_to do |format|
+      format.html { render :show }
+      format.json { render :json => @bill.to_json(:include => :debts) }
+    end
   end
   
   def new
@@ -20,8 +23,9 @@ class BillsController < ApplicationController
   end
   
   def create
-    @bill = Bill.new(:user => current_user, :description => params[:bill][:description], :total_amount => params[:bill][:total_amount])
     bill_id = Bill.last.nil? ? 1: Bill.last.id + 1
+    @bill = Bill.new(:id => bill_id, :user => current_user, :description => params[:bill][:description], :total_amount => params[:bill][:total_amount])
+
     debts_count = Bill.calculate(bill_id, params[:bill][:total_amount].to_i, params[:bill][:guests])
 
     flash[:notice] = debts_count

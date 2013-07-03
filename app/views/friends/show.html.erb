@@ -34,6 +34,7 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
+
     HISTORY = JSON.parse($("#listItems").html());
     
     $(".payment").click(function(event) {
@@ -56,22 +57,49 @@ $(document).ready(function() {
     
     $(".bill").click(function(event) {
         event.preventDefault();
-        console.log(event.target);
-        $(event.target).after("Bill Details!");
+        
+        $.ajax({
+          url: "/bills/" + event.target.id + ".json",
+          type: "get",
+          success: function (billData) {
+            var result = billData;
+            
+            if ($(event.target).attr("data-list-shown") === "false") {
+              showBill(event, result);
+            } else {
+              hide(event, result);
+            }
+          }
+        });
     });
     
+    var showBill = function(event, result) {
+        //trying to get more bill information
+        console.log(result.debts[0].amount); 
+      var $div = $("<div></div>");
+      $div.attr("id", "details-"+ result.id)
+      var billDetails = "<br>Bill Details<br>Description: " + result.description + "<br>Total Amount: $" + result.total_amount + "<br><br>";
+      $div.append(billDetails);
+                
+      $(event.target).after($div);
+      $(event.target).attr("data-list-shown", "true");
+      $(event.target).parent().append($div);
+    };
+    
     var show = function(event, result) {
-        console.log(result);
-      var renderedContent = "Memo: " + result.memo + " Amount: $" + result.amount;
       var index = $(event.target).attr("id")
+        
+      var renderedContent = "<br>Memo: " + result.memo + "<br>" + "Amount: $" + result.amount + "<br><br>";
+      
+      var $div = $("<div></div>")
+      $div.attr("id", "details-"+ result.id)
+      $div.append(renderedContent);
 
       $(event.target).attr("data-list-shown", "true");
-      $(event.target).parent().append(renderedContent);
-
+      $(event.target).parent().append($div);
     };
 
     var hide = function(event, list) {
-      console.log("Need to hide.");
       $(event.target).parent().find("div").remove();
       $(event.target).attr("data-list-shown", "false");
     };

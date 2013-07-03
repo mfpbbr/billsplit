@@ -1,5 +1,5 @@
 class Player
-  attr_accessor :user_id, :amount_paid, :amount_should_have_paid
+  attr_accessor :user_id, :amount_paid, :amount_should_have_paid, :id
   
   def initialize(user_id, amount_paid, amount_should_have_paid)
     @user_id = user_id
@@ -21,6 +21,7 @@ class Bill < ActiveRecord::Base
   attr_accessible :description, :total_amount, :user_id, :id, :user
 
   # belongs_to :user #maybe the bill does not belong to the user who created it. Instead, it needs to show up for all users who are debtors. A bill can be referred to an 'invoice' for creditors
+  # maybe user is the person who added the bill, 
   belongs_to :user
   
   has_many :debts
@@ -44,6 +45,8 @@ class Bill < ActiveRecord::Base
   accepts_nested_attributes_for :involved_parties, 
     :reject_if => :all_blank, 
     :allow_destroy => true
+    
+  validates :total_amount, :description, :presence => true
     
   def self.calculate(bill_id, bill_total, guests_params)
     return "What users paid does not match bill total." if self.correct_input(bill_total, guests_params) == false
