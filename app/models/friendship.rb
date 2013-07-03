@@ -8,11 +8,9 @@ class Friendship < ActiveRecord::Base
     :foreign_key => :friend_id
     
     # validate :only_one_friendship_between_two_people
-  
+    #   
     # def only_one_friendship_between_two_people
-    #   if Friendship.where(:user_id => user_id, :friend_id => friend_id)
-    #     errors[:already_friends] << "You are already friends."
-    #   elsif Friendship.where(:user_id => friend_id, :friend_id => user_id)
+    #   if Friendship.where(:user_id => user_id, :friend_id => friend_id) || Friendship.where(:user_id => friend_id, :friend_id => user_id)
     #     errors[:already_friends] << "You are already friends."
     #   end
     # end
