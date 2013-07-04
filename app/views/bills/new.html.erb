@@ -1,29 +1,33 @@
 <h2>Add A Bill</h2>
 
-<form class="bill-form" action="<%= bills_url %>" method="post">
+<form class="bill-form" id="bill-form" action="<%= bills_url %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
-    <input type="text" name="bill[description]" value="<%= @bill.description %>" placeholder="Bill Description">
+    <input type="text" id="description" name="bill[description]" value="<%= @bill.description %>" placeholder="Bill Description">
     <br>
-    <input type="number" name="bill[total_amount]" value="<%= @bill.total_amount %>" placeholder="Total Amount">
+    <input type="number" id="total" name="bill[total_amount]" value="<%= @bill.total_amount %>" placeholder="Total Amount">
     <br>
     <br>
+    
+    <div class="guest-entry">
     <select name="bill[guests][][user_id]">
         <option value="<%= @user.id %>">You</option>
-        <% @user.friends.each do |friend| %>   
+        <!-- <% @user.friends.each do |friend| %>   
           <option value="<%= friend.id %>"><%= friend.username %></option>
         <% end %>
         
         <% @user.inverse_friends.each do |inverse_friend| %>   
           <option value="<%= inverse_friend.id %>"><%= inverse_friend.username %></option>
-        <% end %>
+        <% end %> -->
     </select>
     <br>
+    <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
+    <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+    </div>
     
-    <input type="number" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
-    <input type="number" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
     <br>
     <br>
+    <div class="guest-entry">
     <select name="bill[guests][][user_id]">
         <option value="">Friend Involved in Bill: </option>
         <% @user.friends.each do |friend| %>   
@@ -36,9 +40,9 @@
     </select>
     <br>
     
-    <input type="number" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
-    <input type="number" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
-
+    <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
+    <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+    </div>
     <br>
     <br>
     <button type="submit" class="add-friend">Add Another Friend to Bill</button>
@@ -54,8 +58,8 @@
 
 <!-- Templates -->
 
-<script type="text/text" id="listShow">
-  <div class='friend-form'>
+<script type="text/html" id="listShow">
+  <div class='friend-form guest-entry'>
   <select name="bill[guests][][user_id]">
       <option value="">Friend Involved in Bill: </option>
       <% @user.friends.each do |friend| %>   
@@ -67,8 +71,8 @@
       <% end %>
   </select>
   <br>
-  <input type="number" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
-  <input type="number" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+  <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
+  <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
   <br>
   <br>
   </div>
@@ -83,6 +87,40 @@
           event.preventDefault();
           addFriend();
        });
+       
+       $("#bill-form").submit(function(event) {
+           
+           var inputTotal = 0;
+           var inputShouldHavePaid = 0;
+           var userIdArray = [];
+           
+           if ($("#description").val() == "") {
+               alert("Please enter a description.");
+           }
+           
+           $.each($(".paid"), function() {
+               inputTotal += parseInt($(this).val());
+           });
+           
+           $.each($(".should-have-paid"), function() {
+               inputShouldHavePaid += parseInt($(this).val());
+           });
+          
+           if (inputTotal != $("#total").val() || inputShouldHavePaid != $("#total").val()) {
+               alert("Input total does not match bill total.");
+               event.preventDefault();
+           }
+                      
+           $.each($(".guest-entry select option:selected"), function() {
+               userIdArray.push($(this).val());
+           });
+           
+           if (_.uniq(userIdArray).length != userIdArray.length) {
+               alert("Friends should have bill amounts and cannot have duplicate entries.");
+               event.preventDefault();               
+           }
+       });
+       
     });
 
     var addFriend = function() {

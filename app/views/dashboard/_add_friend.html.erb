@@ -2,6 +2,7 @@
 <form action="<%= friendships_url %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
     
-    <input type="text" name="friendship[friend_email]" placeholder="Your Friend's Email">
-    <input type="submit", value="Add Friend">
+    <input type="text" name="friendship[friend_email]" id="friend-email" placeholder="Your Friend's Email">
+    <button class="add-friend">Add Friend</button>
+    <!-- <input type="submit" value="Add Friend"> -->
 </form>

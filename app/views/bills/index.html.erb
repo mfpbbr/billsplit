@@ -161,8 +161,6 @@ $(document).ready(function() {
     };
     
     var showBill = function(event, result) {
-        //try to include more bill information
-
         var guestInfo = "";
         result.guests.forEach(function(guest){
           guestInfo += guest.username + " paid $" + guest.amount_paid + ", should have paid $" + guest.amount_should_have_paid + "<br>"
@@ -186,10 +184,6 @@ $(document).ready(function() {
       $(event.target).after($div);
       $(event.target).attr("data-list-shown", "true");
       $(event.target).parent().append($div);
-    };
-    
-    var editBill = function(event) {
-        
     };
     
 });

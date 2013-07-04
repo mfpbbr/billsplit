@@ -16,9 +16,10 @@ You are owed: $<%= @user.money_owed_by_friends %>
 <%= link_to "All Expenses", bills_url %>
 <br>
 <br>
-<%= link_to "Your Account", user_url(@user) %>
+<a href="#" class="user-profile" id="<%= @user.id %>" data-list-shown="false">Your Account Info</a>
+
 <h4>Your Friends:</h4>
-<ul>
+<ul class='friend-list'>
     <% @friends.each do |friend| %>
         <li>
             <%= link_to "#{friend.username}", friend_url(friend) %>
@@ -35,3 +36,45 @@ You are owed: $<%= @user.money_owed_by_friends %>
 <%= render :partial => "add_friend" %>
 <br>
 <br>
+
+<script type="text/javascript">
+$(document).ready(function() {
+   $(".add-friend").click(function(event) {
+       event.preventDefault();
+       console.log("trying to add friend.");
+   });
+   
+   $(".user-profile").click(function(event) {
+      event.preventDefault();
+      
+      $.ajax({
+        url: "/users/" + event.target.id + ".json",
+        type: "get",
+        success: function (userInfo) {
+          var result = userInfo;
+          
+          if ($(event.target).attr("data-list-shown") === "false") {
+            show(event, result);
+          } else {
+            hide(event, result);
+          }
+        }
+      });
+
+   });
+   
+   var show = function(event, userInfo) {
+       var $profile = $("<div>");
+       $profile.append(userInfo.email + "<br>" + "Member since: " + userInfo.created_at + "<br>");
+  
+       $(event.target).attr("data-list-shown", "true");
+       $(".user-profile").after($profile);
+      };
+
+   var hide = function(event, UserInfo) {
+     $(event.target).parent().find("div").remove();
+     $(event.target).attr("data-list-shown", "false");
+   };   
+   
+});
+</script>
