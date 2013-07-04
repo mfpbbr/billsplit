@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   attr_reader :password
 
   validates :username, :password_digest, :presence => true
-  validates :username, :email, :uniqueness => true
+  validates :email, :uniqueness => true
   validates :password, :length => { :minimum => 3 }
   
   has_many :friendships

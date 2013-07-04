@@ -137,6 +137,11 @@ $(document).ready(function() {
         });
     });
     
+    $(".edit-bill").click(function(event) {
+       event.preventDefault()
+       console.log("in edit bill form"); 
+    });
+    
     var show = function(event, result) {
       var index = $(event.target).attr("id")
         
@@ -160,18 +165,31 @@ $(document).ready(function() {
 
         var guestInfo = "";
         result.guests.forEach(function(guest){
-                       guestInfo += guest.username + " paid $" + guest.amount_paid + ", should have paid $" + guest.amount_should_have_paid + "<br>"
+          guestInfo += guest.username + " paid $" + guest.amount_paid + ", should have paid $" + guest.amount_should_have_paid + "<br>"
         });
-         
+      
+    var $link = $('<a>',{
+        text: 'Edit Bill',
+        class: 'edit-bill',
+        id: result.id,
+        href: '/bills/' + result.id + '/edit'});
+        // href: "#"});
+        
       var $div = $("<div></div>");
       $div.attr("id", "details-"+ result.id)
       var billDetails = "<br>Bill Details<br>Description: " + result.description + "<br>Total Amount: $" + result.total_amount + "<br><br>";
       $div.append(billDetails);
-      $div.append(guestInfo + "<br>");
+      $div.append(guestInfo);
+      $div.append($link);
+      $div.append("<br><br>");
                 
       $(event.target).after($div);
       $(event.target).attr("data-list-shown", "true");
       $(event.target).parent().append($div);
+    };
+    
+    var editBill = function(event) {
+        
     };
     
 });

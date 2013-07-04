@@ -1,6 +1,7 @@
 <h2><%= @user.username %>'s Dashboard</h2>
 <br>
 <strong><%= "You are all settled up!" if @user.settled_up? %></strong>
+<br>
 You owe: $<%= @user.money_owed_to_friends %>
 <br>
 You are owed: $<%= @user.money_owed_by_friends %>

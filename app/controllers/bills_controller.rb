@@ -4,7 +4,10 @@ class BillsController < ApplicationController
     @debts = current_user.debts
     @history = current_user.get_history
     
-    render :index
+    respond_to do |format|
+      format.html { render :index }
+      format.json { render :json => @history.to_json(:include =>{:bill => {:include => :guests} }) }
+    end
   end
   
   def show
