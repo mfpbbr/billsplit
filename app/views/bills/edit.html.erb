@@ -58,6 +58,9 @@ Should have paid $<input type="text" class="should-have-paid" name="bill[guests]
   <input type="hidden" name="bill[guests][][username]">
   <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
   <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+  
+  <button class="remove-friend">Remove Friend</button>
+  
   <br>
   <br>
   </div>
@@ -78,6 +81,11 @@ Should have paid $<input type="text" class="should-have-paid" name="bill[guests]
         var templateFunction = _.template($("#listShow").html());
         var renderedContent = templateFunction();
         $(".add-friend").before(renderedContent);
+        
+        $(".remove-friend").click(function(event) {
+            event.preventDefault();
+            $(event.target).parent().empty();
+        });
     };
     
     $(".bill-form").submit(function(event) {
@@ -108,7 +116,6 @@ Should have paid $<input type="text" class="should-have-paid" name="bill[guests]
             alert("Input total does not match bill total.");
             event.preventDefault();
         }
-        
     });
     
 </script>

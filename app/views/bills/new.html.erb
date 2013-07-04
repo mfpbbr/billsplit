@@ -1,4 +1,4 @@
-<h2>Add A Bill</h2>
+<h2>Add Bill</h2>
 
 <form class="bill-form" id="bill-form" action="<%= bills_url %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
@@ -67,7 +67,8 @@
   <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
   <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
   
-  <button
+  <button class="remove-friend">Remove Friend</button>
+      
   <br>
   <br>
   </div>
@@ -84,7 +85,7 @@
        });
        
        $("#bill-form").submit(function(event) {
-
+       
            var inputTotal = 0;
            var inputShouldHavePaid = 0;
            var userIdArray = [];
@@ -123,5 +124,10 @@
         var templateFunction = _.template($("#listShow").html());
         var renderedContent = templateFunction();
         $(".add-friend").before(renderedContent);
+        
+        $(".remove-friend").click(function(event) {
+            event.preventDefault();
+            $(event.target).parent().empty();
+        });
     };
 </script>

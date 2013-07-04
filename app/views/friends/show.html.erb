@@ -2,9 +2,20 @@
   <%= @history.to_json.html_safe %>
 </script>
 
+<div id='friend-debt'>
 <h2>Your expenses with <%= @friend.username %></h2>
 <h3><%= @debt_to_friend > 0 ? "You owe #{@friend.username}: $" : "#{@friend.username} owes you: $" %>
-    <%= @debt_to_friend.abs %></h3>
+    <%= @debt_to_friend.abs %>
+
+    <% if @debt_to_friend > 0 %>
+      <button class="pay-friend" type="submit" data-list-shown="false">Pay <%= @friend.username %></button>
+    <% end %>
+    
+    <% if @debt_to_friend < 0 %>
+    <button class="nudge-friend" type="submit" data-list-shown="false">Nudge <%= @friend.username %></button>
+    <% end %>
+</h3>
+</div>
 
 <ul id="expenses">
 <% @history.each do |h| %>
@@ -31,6 +42,28 @@
 <br>
 <br>
 
+<!-- Templates -->
+
+<script type="text/html" id="payFriend">
+  <div class='pay-friend'>
+  
+  <form class="payment-form" action="<%= debts_url %>" method="post">
+      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+      
+      Payment to: <%= @friend.username %>
+      <input type="hidden" name="debt[debtor_id]" value="<%= @friend.id %>">
+      <br>
+      <input type="text" id="description" name="debt[memo]" placeholder="Reason for Payment">
+      <br>
+      <input type="number" id="amount" name="debt[amount]" placeholder="Amount">
+      <br>
+      <input type="submit" value="Submit Payment">
+  </form>
+  </div>
+</script>
+
+<!-- JavaScript -->
+
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -54,6 +87,30 @@ $(document).ready(function() {
           hide(event, result);
         }
     });
+    
+    $(".pay-friend").click(function(event) {
+        event.preventDefault();
+        payFriend();      
+    });
+    
+    $(".nudge-friend").click(function(event) {
+       event.preventDefault();
+       console.log("NUDGE!"); 
+    });
+    
+    var payFriend = function() {
+
+        var templateFunction = _.template($("#payFriend").html());
+        var renderedContent = templateFunction();
+        $("#friend-debt").after(renderedContent);
+        $cancelButton = $('<button>',{ text: 'Cancel', href: '#', class: "cancel-button"});
+        $(".payment-form").after($cancelButton);
+    
+        $(".cancel-button").click(function(event) {
+            event.preventDefault();
+           $(event.target).parent().empty();
+        });
+    };
     
     $(".bill").click(function(event) {
         event.preventDefault();
