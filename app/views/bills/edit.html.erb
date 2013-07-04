@@ -6,14 +6,14 @@ Added by: <%= link_to "#{@bill.user.username}", user_url(@bill.user) %>
 Date added: <%= @bill.created_at %>
 <br>
 <br>
-<form action="<%= bill_url(@bill) %>" method="post">
+<form class="bill-form" action="<%= bill_url(@bill) %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
     
 <label for="bill_total_amount">Total Amount: </label>
-<input type="number" name="bill[total_amount]" value="<%= @bill.total_amount %>" id="bill_total_amount">
+<input type="number" id="total" name="bill[total_amount]" value="<%= @bill.total_amount %>" id="bill_total_amount">
 <br>
 <label for="bill_description">Description: </label>
-<input type="text" name="bill[description]" value="<%= @bill.description %>" id="bill_description">
+<input type="text" id="description" name="bill[description]" value="<%= @bill.description %>" id="bill_description">
 <br>
 <br>
 <ul>
@@ -23,7 +23,9 @@ Date added: <%= @bill.created_at %>
 <%= guest.username %> paid $
 <input type="hidden" name="bill[guests][][user_id]" value="<%= guest.user_id %>">
 <input type="hidden" name="bill[guests][][username]" value="<%= guest.username %>">
-<input type="text" name="bill[guests][][amount_paid]" value="<%= guest.amount_paid %>">. Should have paid $<input type="text" name="bill[guests][][amount_should_have_paid]" value="<%= guest.amount_should_have_paid %>">.
+<input type="text" class="paid" name="bill[guests][][amount_paid]" value="<%= guest.amount_paid %>">. 
+
+Should have paid $<input type="text" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" value="<%= guest.amount_should_have_paid %>">.
 
 </li>
 <% end %>
@@ -40,7 +42,7 @@ Date added: <%= @bill.created_at %>
 
 <!-- Templates -->
 
-<script type="text/text" id="listShow">
+<script type="text/html" id="listShow">
   <div class='friend-form'>
   <select name="bill[guests][][user_id]">
       <option value="">Friend Involved in Bill: </option>
@@ -53,8 +55,9 @@ Date added: <%= @bill.created_at %>
       <% end %>
   </select>
   <br>
-  <input type="number" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
-  <input type="number" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+  <input type="hidden" name="bill[guests][][username]">
+  <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
+  <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
   <br>
   <br>
   </div>
@@ -76,4 +79,37 @@ Date added: <%= @bill.created_at %>
         var renderedContent = templateFunction();
         $(".add-friend").before(renderedContent);
     };
+    
+    $(".bill-form").submit(function(event) {
+        
+        var inputTotal = 0;
+        var inputShouldHavePaid = 0;
+        var userIdArray = [];        
+        
+        if($("#description").val() == "") {
+            alert("Please enter a description.");
+            event.preventDefault();
+        }
+        
+        if($("#total").val() == "") {
+            alert("Please enter a bill total.");
+            event.preventDefault();
+        }
+        
+        $.each($(".paid"), function() {
+            inputTotal += parseInt($(this).val());
+        });
+        
+        $.each($(".should-have-paid"), function() {
+            inputShouldHavePaid += parseInt($(this).val());
+        });
+       
+        if (inputTotal != $("#total").val() || inputShouldHavePaid != $("#total").val()) {
+            alert("Input total does not match bill total.");
+            event.preventDefault();
+        }
+        
+    });
+    
 </script>
+

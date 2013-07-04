@@ -31,7 +31,8 @@ You have lent money <%= @user.invoices.length %> times.
 <ul>
 <% @user.invoices.uniq.each do |invoice| %>
 
-    <% invoice.debts.each do |debt| %>
+    <% (invoice.debts).uniq.each do |debt| %>
+    <% next if debt.creditor != @user %>
     <li>
     <strong><%= debt.created_at.strftime("%b %d %Y") %></strong>:
     You lent <%= debt.debtor.username %> $<%= debt.amount %>. 

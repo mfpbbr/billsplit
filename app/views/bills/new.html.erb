@@ -12,13 +12,6 @@
     <div class="guest-entry">
     <select name="bill[guests][][user_id]">
         <option value="<%= @user.id %>">You</option>
-        <!-- <% @user.friends.each do |friend| %>   
-          <option value="<%= friend.id %>"><%= friend.username %></option>
-        <% end %>
-        
-        <% @user.inverse_friends.each do |inverse_friend| %>   
-          <option value="<%= inverse_friend.id %>"><%= inverse_friend.username %></option>
-        <% end %> -->
     </select>
     <br>
     <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
@@ -73,6 +66,8 @@
   <br>
   <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
   <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+  
+  <button
   <br>
   <br>
   </div>
@@ -89,13 +84,14 @@
        });
        
        $("#bill-form").submit(function(event) {
-           
+
            var inputTotal = 0;
            var inputShouldHavePaid = 0;
            var userIdArray = [];
            
            if ($("#description").val() == "") {
                alert("Please enter a description.");
+               event.preventDefault();
            }
            
            $.each($(".paid"), function() {

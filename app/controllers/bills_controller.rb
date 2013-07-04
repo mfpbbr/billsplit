@@ -28,14 +28,14 @@ class BillsController < ApplicationController
   def create
     bill_id = Bill.last.nil? ? 1: Bill.last.id + 1
     @bill = Bill.new(:id => bill_id, :user => current_user, :description => params[:bill][:description], :total_amount => params[:bill][:total_amount])
-
-    debts_count = Bill.calculate(bill_id, params[:bill][:total_amount].to_i, params[:bill][:guests])
-
-    flash[:notice] = debts_count
     
     if @bill.save!
+      Bill.calculate(bill_id, params[:bill][:total_amount].to_i, params[:bill][:guests])
+
+      flash[:notice] = "Bill successfully created."
       redirect_to bill_url(@bill)
     else
+      flash[:notice] = "Unable to create bill."
       render :new
     end
   end
@@ -52,12 +52,15 @@ class BillsController < ApplicationController
   
   def update
     @bill = Bill.find(params[:id])
+    @user = current_user
     @bill.debts.destroy_all
     @bill.guests.destroy_all
-    debts_count = Bill.calculate(params[:id], params[:bill][:total_amount].to_i, params[:bill][:guests])
-    
+
+    # render :json => params    
     if @bill.update_attributes(:description => params[:bill][:description], :total_amount => params[:bill][:total_amount])
       flash[:notice] = "Bill successfully updated."
+      Bill.calculate(params[:id], params[:bill][:total_amount].to_i, params[:bill][:guests])
+    
       redirect_to bill_url(@bill)
     else
       flash[:notice] = "Unable to edit bill."

@@ -1,6 +1,6 @@
 <h2>Make a Payment</h2>
 
-<form action="<%= debts_url %>" method="post">
+<form class="bill-form" action="<%= debts_url %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
     
     <select name="debt[debtor_id]">
@@ -14,9 +14,9 @@
         <% end %>
     </select>
     <br>
-    <input type="text" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
+    <input type="text" id="description" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
     <br>
-    <input type="number" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
+    <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
     <br>
     <input type="submit" value="Submit Payment">
 </form>
@@ -25,3 +25,26 @@
 <%= link_to "Back to Dashboard (do not make a new payment)", root_url %>
 <br>
 <br>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+       
+        $(".bill-form").submit(function(event) {
+            if ($("select option:selected").val() == "") {
+                alert("Please select a friend to pay.");
+                event.preventDefault();
+            }
+            
+            if ($("#description").val() == "") {
+                alert("Please enter a description.");
+                event.preventDefault();
+            }
+            
+            if ($("#amount").val() == "") {
+                alert("Please enter amount.");
+                event.preventDefault();
+            }
+        });
+    });
+
+</script>

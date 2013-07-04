@@ -49,6 +49,8 @@ class Bill < ActiveRecord::Base
   validates :total_amount, :description, :presence => true
       
   def self.calculate(bill_id, bill_total, guests_params)
+    # so if what users paid does not match the bill total, then the new guests and debts do not get made...
+    # so need a javascript validator that it
     return "What users paid does not match bill total." if self.correct_input(bill_total, guests_params) == false
     
     guests_array = []
