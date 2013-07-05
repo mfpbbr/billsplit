@@ -12,9 +12,16 @@
     <% end %>
     
     <% if @debt_to_friend < 0 %>
-    <button class="nudge-friend btn btn-warning" type="button" data-list-shown="false">Nudge <%= @friend.username %></button>
+    <!-- <%= button_to "Nudge #{@friend.username}", friend_nudges_url(@friend), :class => "btn btn-warning" %> -->
+    <button class="nudge-friend btn btn-warning" data-id="<%= @friend.id %>">Nudge <%= @friend.username %></button>
     <% end %>
 </h3>
+</div>
+
+<div class="progress">
+  <div class="bar bar-success" style="width: 35%;"></div>
+  <div class="bar bar-warning" style="width: 20%;"></div>
+  <div class="bar bar-danger" style="width: 45%;"></div>
 </div>
 
 <ul id="expenses">
@@ -117,7 +124,29 @@ $(document).ready(function() {
     
     $(".nudge-friend").click(function(event) {
        event.preventDefault();
-       console.log("NUDGE!"); 
+       var friendId = $(event.target).attr("data-id");
+       
+       $.ajax({
+          url: "/friends/" + friendId + "/nudges",
+          type: "post",
+          success: function() {
+              var $div = $("<div>", {
+                  class: "alert alert-info",
+                  text: "Your friend has been nudged."
+              });
+              
+              var $closeButton = $("<button>", {
+                  type: "button",
+                  class: "close",
+                  text: "x",
+                  "data-dismiss": "alert"
+              });
+
+              $div.append($closeButton);
+              $('#friend-debt').append($div);
+          }
+       });
+       
     });
     
     var payFriend = function() {

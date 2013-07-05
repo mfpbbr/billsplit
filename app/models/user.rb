@@ -43,6 +43,12 @@ class User < ActiveRecord::Base
     :through => :credits,
     :source => :bill,
     :foreign_key => :creditor_id
+    
+  has_many :nudges
+  
+  has_many :received_nudges,
+    :class_name => "Nudge",
+    :foreign_key => "friend_id"
 
   def password
     @password || self.password_digest
