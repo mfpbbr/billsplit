@@ -1,4 +1,5 @@
 class FriendshipsController < ApplicationController
+  
   def create
     friend = User.find_by_email(params[:friendship][:friend_email])
 

@@ -21,7 +21,7 @@ Date added: <%= @bill.created_at %>
 <% @bill.guests.each do |guest| %>
 <li>
 <%= guest.username %> paid $
-<input type="hidden" name="bill[guests][][user_id]" value="<%= guest.user_id %>">
+<input type="hidden" class="bill-guest" name="bill[guests][][user_id]" value="<%= guest.user_id %>">
 <input type="hidden" name="bill[guests][][username]" value="<%= guest.username %>">
 <input type="text" class="paid" name="bill[guests][][amount_paid]" value="<%= guest.amount_paid %>">. 
 
@@ -43,7 +43,7 @@ Should have paid $<input type="text" class="should-have-paid" name="bill[guests]
 <!-- Templates -->
 
 <script type="text/html" id="listShow">
-  <div class='friend-form'>
+  <div class='friend-form guest-entry'>
   <select name="bill[guests][][user_id]">
       <option value="">Friend Involved in Bill: </option>
       <% @user.friends.each do |friend| %>   
@@ -89,34 +89,49 @@ Should have paid $<input type="text" class="should-have-paid" name="bill[guests]
     };
     
     $(".bill-form").submit(function(event) {
-        
         var inputTotal = 0;
         var inputShouldHavePaid = 0;
-        var userIdArray = [];        
-        
-        if($("#description").val() == "") {
-            alert("Please enter a description.");
-            event.preventDefault();
-        }
-        
-        if($("#total").val() == "") {
-            alert("Please enter a bill total.");
-            event.preventDefault();
-        }
-        
+        var userIdArray = [];
+        var paidLength = 0;
+        var shouldHavePaidLength = 0;
+                   
         $.each($(".paid"), function() {
             inputTotal += parseInt($(this).val());
+            if ($(this).val() != "") {
+                paidLength += 1;
+            }
         });
         
         $.each($(".should-have-paid"), function() {
             inputShouldHavePaid += parseInt($(this).val());
+            if ($(this).val() != "") {
+                shouldHavePaidLength += 1;
+            }
         });
-       
-        if (inputTotal != $("#total").val() || inputShouldHavePaid != $("#total").val()) {
+        
+        for(var i = 0; i < $(".bill-guest").length; i++) {
+            userIdArray.push($(".bill-guest")[i].defaultValue);
+        }
+                   
+        $.each($(".guest-entry select option:selected"), function() {
+            if ($(this).val() != "") {
+              userIdArray.push($(this).val());
+            }
+        });
+        
+        if ($("#description").val() == "") {
+            alert("Please enter a description.");
+            event.preventDefault();
+        } else if (inputTotal != $("#total").val() || inputShouldHavePaid != $("#total").val()) {
             alert("Input total does not match bill total.");
             event.preventDefault();
+        } else if (_.uniq(userIdArray).length != userIdArray.length ||
+            _.uniq(userIdArray).length != paidLength ||
+            paidLength != shouldHavePaidLength) {
+            alert("Friends should have bill amounts and cannot have duplicate entries.");
+            event.preventDefault();               
         }
+
     });
-    
 </script>
 

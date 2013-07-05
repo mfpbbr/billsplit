@@ -7,9 +7,9 @@ class DebtsController < ApplicationController
   end
   
   def create
+    # render :json => params[:debt]
     @debt = Debt.new(params[:debt])
     
-    # render :json => @debt
     @debt.is_a_payment = true
     @debt.creditor_id = current_user.id
     
@@ -27,3 +27,6 @@ class DebtsController < ApplicationController
     render :show
   end
 end
+
+
+#iterate over the payments that get sent out

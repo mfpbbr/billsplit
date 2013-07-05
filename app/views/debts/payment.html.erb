@@ -19,17 +19,34 @@
     <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
     <br>
     <br>
-    <button class="add-payment">Add Payment</button>
+    <button class="add-payment">Add Payment (not working yet)</button>
     <br>
     <br>
     <input type="submit" value="Submit">
 </form>
 <br>
-
 <br>
-<h6><a href="#" class="question" data-list-shown="false">What do I owe?</a></h6>
 
-<div class="debt-list">
+<% if @user.money_owed_to_friends > 0 %>
+<h6><a href="#" class="question" data-list-shown="false">What do I owe?</a></h6>
+<% else %>
+You have no outstanding debts, but you are free to make payments!
+<% end %>
+
+<div class="debt-list" style="display:none">
+
+    <% @user.friends.each do |friend| %>
+        <% if @user.calculate_debt_to(friend) > 0 %>
+            <%= "You owe #{friend.username}: $#{@user.calculate_debt_to(friend)}" %>
+        <% end %>
+    <% end %>
+    
+    <% @user.inverse_friends.each do |friend| %>
+        <% if @user.calculate_debt_to(friend) > 0 %>
+            <%= "You owe #{friend.username}: $#{@user.calculate_debt_to(friend)}" %>
+        <% end %>    
+    <% end %>
+   
 </div>
 
 <br>
@@ -58,7 +75,7 @@
     <input type="text" id="description" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
     <br>
     <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
-
+    <button class="remove-payment">Cancel this Payment</button>
 </script>
 
 <!-- JavaScript -->
@@ -68,37 +85,36 @@
         
         $(".question").click(function(event) {
             event.preventDefault();
-           if ($(event.target).attr("data-list-shown") === "false") {
-               
-               var debtString = "debt list";
-                              
-             $(".debt-list").html(debtString);
-             
-             
+           if ($(event.target).attr("data-list-shown") === "false") {  
+             $('.debt-list').show();
              $(event.target).attr("data-list-shown", "true");
            } else {
-               $(".debt-list").empty();
+               $(".debt-list").hide();
                $(event.target).attr("data-list-shown", "false");
            }
         });
         
         $(".add-payment").click(function(event) {
-            event.preventDefault();
-           console.log("Add another payment"); 
+          event.preventDefault();
+          
+          var templateFunction = _.template($("#payFriend").html());
+          var renderedContent = templateFunction();
+          $(".add-payment").before(renderedContent);
+          
+          $(".remove-payment").click(function(event) {
+              event.preventDefault();
+              $(event.target).parent().empty(); 
+          });
         });
        
         $(".bill-form").submit(function(event) {
             if ($("select option:selected").val() == "") {
                 alert("Please select a friend to pay.");
                 event.preventDefault();
-            }
-            
-            if ($("#description").val() == "") {
-                alert("Please enter a description.");
+            } else if ($("#description").val() == "") {
+                alert("Please enter a reason for payment.");
                 event.preventDefault();
-            }
-            
-            if ($("#amount").val() == "") {
+            } else if ($("#amount").val() == "") {
                 alert("Please enter amount.");
                 event.preventDefault();
             }

@@ -42,9 +42,9 @@ class Bill < ActiveRecord::Base
     
   has_many :involved_parties
     
-  accepts_nested_attributes_for :involved_parties, 
-    :reject_if => :all_blank, 
-    :allow_destroy => true
+  # accepts_nested_attributes_for :involved_parties, 
+  #   :reject_if => :all_blank, 
+  #   :allow_destroy => true
     
   validates :total_amount, :description, :presence => true
       
