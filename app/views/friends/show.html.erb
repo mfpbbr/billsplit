@@ -8,11 +8,11 @@
     <%= @debt_to_friend.abs %>
 
     <% if @debt_to_friend > 0 %>
-      <button class="pay-friend" type="submit" data-list-shown="false">Pay <%= @friend.username %></button>
+      <button class="pay-friend" type="button" data-list-shown="false">Pay <%= @friend.username %></button>
     <% end %>
     
     <% if @debt_to_friend < 0 %>
-    <button class="nudge-friend" type="submit" data-list-shown="false">Nudge <%= @friend.username %></button>
+    <button class="nudge-friend" type="button" data-list-shown="false">Nudge <%= @friend.username %></button>
     <% end %>
 </h3>
 </div>
@@ -89,8 +89,19 @@ $(document).ready(function() {
     });
     
     $(".pay-friend").click(function(event) {
-        event.preventDefault();
-        payFriend();      
+        event.preventDefault();        
+        
+        if ($(event.target).attr("data-list-shown") === "false") {
+          $(event.target).attr("data-list-shown", "true");
+
+          payFriend();
+          
+        } else {
+            $(event.target).attr("data-list-shown", "false");
+
+            $(".payment-form").empty();
+
+        }
     });
     
     $(".nudge-friend").click(function(event) {
@@ -103,13 +114,18 @@ $(document).ready(function() {
         var templateFunction = _.template($("#payFriend").html());
         var renderedContent = templateFunction();
         $("#friend-debt").after(renderedContent);
-        $cancelButton = $('<button>',{ text: 'Cancel', href: '#', class: "cancel-button"});
-        $(".payment-form").after($cancelButton);
-    
-        $(".cancel-button").click(function(event) {
-            event.preventDefault();
-           $(event.target).parent().empty();
-        });
+        
+        $(".payment-form").submit(function(event) {        
+            if ($("#description").val() == "") {
+                alert("Please enter a description.");
+                event.preventDefault();
+            }
+        
+            if ($("#amount").val() == "") {
+                alert("Please enter amount.");
+                event.preventDefault();
+            }
+        });   
     };
     
     $(".bill").click(function(event) {

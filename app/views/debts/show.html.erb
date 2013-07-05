@@ -7,7 +7,7 @@ Created at: <%= @debt.created_at %>
 <br>
 <%= @debt.is_a_payment == true ? "" : "Bill description: #{@debt.bill.description}" %>
 <br>
-Note/Memo: <%= @debt.memo if @debt.memo %>
+Memo: <%= @debt.memo if @debt.memo %>
 <br>
 Amount: $<%= @debt.amount %>
 <br>

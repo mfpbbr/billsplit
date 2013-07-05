@@ -1,4 +1,4 @@
-<h2>Make a Payment</h2>
+<h2>Payment Page</h2>
 
 <form class="bill-form" action="<%= debts_url %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
@@ -18,16 +18,74 @@
     <br>
     <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
     <br>
-    <input type="submit" value="Submit Payment">
+    <br>
+    <button class="add-payment">Add Payment</button>
+    <br>
+    <br>
+    <input type="submit" value="Submit">
 </form>
+<br>
+
+<br>
+<h6><a href="#" class="question" data-list-shown="false">What do I owe?</a></h6>
+
+<div class="debt-list">
+</div>
 
 <br>
 <%= link_to "Back to Dashboard (do not make a new payment)", root_url %>
 <br>
 <br>
 
+<!-- Templates NOTE: DO I WANT TO BE ABLE TO MAKE MORE THAN ONE PAYMENT AT ONCE? -->
+
+<script type="text/html" id="payFriend">
+
+<form class="additional-payment" action="<%= debts_url %>" method="post">
+    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+    
+    <select name="debt[debtor_id]">
+        <option value="">Choose Friend You Want to Pay: </option>
+        <% @user.friends.each do |friend| %>   
+          <option value="<%= friend.id %>"><%= friend.username %></option>
+        <% end %>
+        
+        <% @user.inverse_friends.each do |inverse_friend| %>   
+          <option value="<%= inverse_friend.id %>"><%= inverse_friend.username %></option>
+        <% end %>
+    </select>
+    <br>
+    <input type="text" id="description" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
+    <br>
+    <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
+
+</script>
+
+<!-- JavaScript -->
+
 <script type="text/javascript">
     $(document).ready(function() {
+        
+        $(".question").click(function(event) {
+            event.preventDefault();
+           if ($(event.target).attr("data-list-shown") === "false") {
+               
+               var debtString = "debt list";
+                              
+             $(".debt-list").html(debtString);
+             
+             
+             $(event.target).attr("data-list-shown", "true");
+           } else {
+               $(".debt-list").empty();
+               $(event.target).attr("data-list-shown", "false");
+           }
+        });
+        
+        $(".add-payment").click(function(event) {
+            event.preventDefault();
+           console.log("Add another payment"); 
+        });
        
         $(".bill-form").submit(function(event) {
             if ($("select option:selected").val() == "") {
