@@ -1,13 +1,14 @@
 <h1>Login: </h1>
 
-<form action="/session" method="post">
+<form action="/session" class="form-horizontal" method="post">
 
   <label>Username: <input type="text" name="user[username]" /></label>
   <label>Password: <input type="password" name="user[password]" /></label>
-  <input type="submit" value="Login" />
+  <input type="submit" class="btn btn-success" value="Login" />
 
 </form>
 
 <p>
-  Don't have an account? Then <%= link_to "Sign Up", new_user_path %>
+  Don't have an account? Then 
+  <a href="/users/new"><button class="btn btn-danger">Sign Up</button></a>
 </p>

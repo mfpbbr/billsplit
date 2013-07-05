@@ -19,13 +19,11 @@
     <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
     <br>
     <br>
-    <button class="add-payment">Add Payment (not working yet)</button>
+    <button class="add-payment btn btn-primary">Add Payment (not working yet)</button>
     <br>
     <br>
-    <input type="submit" value="Submit">
+    <input type="submit" class="btn btn-danger" value="Submit">
 </form>
-<br>
-<br>
 
 <% if @user.money_owed_to_friends > 0 %>
 <h6><a href="#" class="question" data-list-shown="false">What do I owe?</a></h6>
@@ -75,7 +73,7 @@ You have no outstanding debts, but you are free to make payments!
     <input type="text" id="description" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
     <br>
     <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
-    <button class="remove-payment">Cancel this Payment</button>
+    <button class="remove-payment btn btn-warning">Cancel this Payment</button>
 </script>
 
 <!-- JavaScript -->
@@ -108,7 +106,7 @@ You have no outstanding debts, but you are free to make payments!
         });
        
         $(".bill-form").submit(function(event) {
-            if ($("select option:selected").val() == "") {
+            if ($("select option:selected").val() == "") {                
                 alert("Please select a friend to pay.");
                 event.preventDefault();
             } else if ($("#description").val() == "") {

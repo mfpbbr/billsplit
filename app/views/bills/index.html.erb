@@ -76,8 +76,19 @@ You have received <%= @user.payments_received.length %> payments.
 <% @history.each do |h| %>
 <li>
     <strong><%= h.created_at.strftime("%b %d") %></strong>:
+    
+    <% if h.creditor.username == @user.username %>
+    <span class="label label-important">You</span>
+    <% else %>
     <%= h.creditor.username %> 
-    <%= h.is_a_payment == true ? "made a payment of $" : "lent $" %> 
+    <% end %>
+    
+    <% if h.is_a_payment == true %>
+    
+made a <span class="badge badge-success">payment</span> of $
+<% else %>
+<span class="badge badge-warning">lent</span> $
+<% end %>
     <%= h.amount %>
     to
     <%= h.debtor.username %>

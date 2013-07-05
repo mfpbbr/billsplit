@@ -24,7 +24,7 @@ Updated at: <%= @bill.updated_at %>
 <ul>
     <% @bill.debts.each do |debt| %>
         <li>
-            <%= debt.debtor.username %> owes <%= debt.creditor.username %> $<%= debt.amount %>.
+            <%= debt.debtor.username %> <span class="badge badge-warning">owes</span> <%= debt.creditor.username %> $<%= debt.amount %>.
         </li>
     <% end %>
 </ul>

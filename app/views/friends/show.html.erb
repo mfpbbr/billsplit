@@ -8,37 +8,47 @@
     <%= @debt_to_friend.abs %>
 
     <% if @debt_to_friend > 0 %>
-      <button class="pay-friend" type="button" data-list-shown="false">Pay Friend</button>
+      <button class="pay-friend btn btn-success" type="button" data-list-shown="false">Pay Friend</button>
     <% end %>
     
     <% if @debt_to_friend < 0 %>
-    <button class="nudge-friend" type="button" data-list-shown="false">Nudge <%= @friend.username %></button>
+    <button class="nudge-friend btn btn-warning" type="button" data-list-shown="false">Nudge <%= @friend.username %></button>
     <% end %>
 </h3>
 </div>
 
 <ul id="expenses">
-<% @history.each do |h| %>
-<li>
-    <strong><%= h.created_at.strftime("%b %d %Y") %></strong>:
+    <% @history.each do |h| %>
+    <li>
+        <strong><%= h.created_at.strftime("%b %d") %></strong>:
+        <% if h.creditor.username == @user.username %>
+        <span class="label label-important">You</span>
+        <% else %>
+        <%= h.creditor.username %> 
+        <% end %>
+
     
-    <%= h.creditor.username %> 
-    <%= h.is_a_payment == true ? "made a payment of $" : "lent $" %> 
-    <%= h.amount %>
-    to
-    <%= h.debtor.username %>
+        <% if h.is_a_payment == true %>
     
-    <% if h.is_a_payment == true %>
-        <a href="#" id="<%= h.id %>" class="payment" data-list-shown="false">Payment id: <%= h.id %></a>
+    made a <span class="badge badge-success">payment</span> of $
     <% else %>
-        <a href="#" id="<%= h.bill_id %>" class="bill" data-list-shown="false">Bill id: <%= h.bill_id %></a>
+    <span class="badge badge-warning">lent</span> $
     <% end %>
-</li>
-<% end %>
+        <%= h.amount %>
+        to
+        <%= h.debtor.username %>
+    
+        <% if h.is_a_payment == true %>
+            <a href="#" id="<%= h.id %>" class="payment" data-list-shown="false">Payment id: <%= h.id %></a>
+        <% else %>
+            <a href="#" id="<%= h.bill_id %>" class="bill" data-list-shown="false">Bill id: <%= h.bill_id %></a>
+        <% end %>
+
+    </li>
+    <% end %>
+
 </ul>
 
-<br>
-<%= link_to "Back to Dashboard", root_url %>
 <br>
 <br>
 
@@ -57,7 +67,7 @@
       <br>
       <input type="number" id="amount" name="debt[amount]" placeholder="Amount">
       <br>
-      <input type="submit" value="Submit Payment">
+      <input type="submit" class="btn btn-danger" value="Submit Payment">
   </form>
   </div>
 </script>

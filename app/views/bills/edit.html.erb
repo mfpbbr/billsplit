@@ -30,11 +30,11 @@ Should have paid $<input type="text" class="should-have-paid" name="bill[guests]
 </li>
 <% end %>
 </ul>
-<button type="submit" class="add-friend">Add Another Friend to Bill</button>
+<button type="submit" class="add-friend btn btn-primary">Add Another Friend to Bill</button>
 <br>
 <br>
 
-<input type="submit" value="Edit Bill">
+<input type="submit" class="btn btn-danger" value="Edit Bill">
 <input name="_method" type="hidden" value="put">
 </form>
 <br>
@@ -59,7 +59,7 @@ Should have paid $<input type="text" class="should-have-paid" name="bill[guests]
   <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
   <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
   
-  <button class="remove-friend">Remove Friend</button>
+  <button class="remove-friend btn btn-warning">Remove Friend</button>
   
   <br>
   <br>

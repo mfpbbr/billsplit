@@ -7,15 +7,6 @@ You owe: $<%= @user.money_owed_to_friends %>
 You are owed: $<%= @user.money_owed_by_friends %>
 <br>
 <br>
-<strong><%= link_to "Add a Bill", new_bill_url %></strong>
-<br>
-<br>
-<strong><%= link_to "Make a Payment", new_debt_url %></strong>
-<br>
-<br>
-<%= link_to "All Expenses", bills_url %>
-<br>
-<br>
 <a href="#" class="user-profile" id="<%= @user.id %>" data-list-shown="false">Your Account Info</a>
 
 <h4>Your Friends:</h4>
