@@ -5,8 +5,11 @@
     <div class="alert alert-error">
         <button type="button" class="close" data-id="<%= nudge.id %>" data-dismiss="alert">&times;</button>
       You have been nudged by <%= nudge.user.username %>
+      <button type="button" class="pay-friend btn btn-success" data-list-shown="false">Pay Up</button>
     </div>
 <% end %>
+<div id="friend-debt">
+</div>
 
 <% if @user.settled_up? %>
 <span class="label label-success">Congrats!</span><strong> You are all settled up.</strong>
@@ -37,6 +40,26 @@ You are owed: $<%= @user.money_owed_by_friends %>
 <%= render :partial => "add_friend" %>
 <br>
 <br>
+
+<!-- Templates -->
+
+<script type="text/html" id="payFriend">
+  <div class='pay-friend'>
+  
+  <form class="payment-form" action="<%= debts_url %>" method="post">
+      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+      <br>
+      <input type="text" id="description" name="debt[memo]" placeholder="Reason for Payment">
+      <br>
+      <input type="number" id="amount" name="debt[amount]" placeholder="Amount">
+      <br>
+      <input type="submit" class="btn btn-danger" value="Submit Payment">
+  </form>
+  </div>
+</script>
+
+<!-- Javascript -->
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -75,6 +98,40 @@ $(document).ready(function() {
          } 
       });
    });
+   
+   $(".pay-friend").click(function(event) {
+       event.preventDefault();   
+       
+       $(this).text(function(i, text){
+           return text === "Pay Up" ? "Cancel Payment" : "Pay Up";
+       })     
+       
+       if ($(event.target).attr("data-list-shown") === "false") {
+         $(event.target).attr("data-list-shown", "true");
+         payFriend();
+         
+       } else {
+           $(event.target).attr("data-list-shown", "false");
+           $(".payment-form").empty();
+       }
+   });
+   
+   var payFriend = function() {
+
+       var templateFunction = _.template($("#payFriend").html());
+       var renderedContent = templateFunction();
+       $("#friend-debt").after(renderedContent);
+       
+       $(".payment-form").submit(function(event) {        
+           if ($("#description").val() == "") {
+               alert("Please enter a description.");
+               event.preventDefault();
+           } else if ($("#amount").val() == "") {
+               alert("Please enter amount.");
+               event.preventDefault();
+           }
+       });   
+   };
    
    var show = function(event, userInfo) {
        var $profile = $("<div>");

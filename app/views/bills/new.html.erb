@@ -9,20 +9,20 @@
     <br>
     <br>
     
-    <div class="guest-entry input-prepend input-append">
+    <div class="guest-entry">
     <select name="bill[guests][][user_id]">
         <option value="<%= @user.id %>">You</option>
     </select>
     <br>
-      <span class="add-on">$</span>
-    <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
-      <span class="add-on">$</span>
-    <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+
+    $<input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
+
+    $<input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
     </div>
     
     <br>
     <br>
-    <div class="guest-entry input-prepend input-append">
+    <div class="guest-entry">
     <select name="bill[guests][][user_id]">
         <option value="">Friend Involved in Bill: </option>
         <% @user.friends.each do |friend| %>   
@@ -34,10 +34,9 @@
         <% end %>
     </select>
     <br>
-      <span class="add-on">$</span>
-    <input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
-      <span class="add-on">$</span>
-    <input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
+    $<input type="number" class="paid" name="bill[guests][][amount_paid]" placeholder="Amount Paid">
+
+    $<input type="number" class="should-have-paid" name="bill[guests][][amount_should_have_paid]" placeholder="Should Have Paid">
     </div>
     <br>
     <br>

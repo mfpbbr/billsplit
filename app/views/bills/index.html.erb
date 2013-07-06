@@ -8,9 +8,7 @@
     You are owed: $<%= @user.money_owed_by_friends %>
 </h4>
 
-<h5><a href="#categories">See Expense Categories</a>
-<br>
-<%= link_to "Back to Dashboard", "/" %></h5>
+<h5><a href="#categories">See Expense Categories</a></h5>
 
 <div id="chronological">
 <h3>Chronological History</h3>
@@ -153,7 +151,6 @@ $(document).ready(function() {
     
     $(".edit-bill").click(function(event) {
        event.preventDefault()
-       console.log("in edit bill form"); 
     });
     
     var show = function(event, result) {

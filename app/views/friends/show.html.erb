@@ -12,16 +12,16 @@
     <% end %>
     
     <% if @debt_to_friend < 0 %>
-    <!-- <%= button_to "Nudge #{@friend.username}", friend_nudges_url(@friend), :class => "btn btn-warning" %> -->
+
     <button class="nudge-friend btn btn-warning" data-id="<%= @friend.id %>">Nudge <%= @friend.username %></button>
     <% end %>
 </h3>
 </div>
 
 <div class="progress">
-  <div class="bar bar-success" style="width: 35%;"></div>
-  <div class="bar bar-warning" style="width: 20%;"></div>
-  <div class="bar bar-danger" style="width: 45%;"></div>
+  <div class="bar bar-success" style="width: <%= @green %>%;"></div>
+  <div class="bar bar-warning" style="width: <%= @yellow %>%;"></div>
+  <div class="bar bar-danger" style="width: <%= @red %>%;"></div>
 </div>
 
 <ul id="expenses">
@@ -35,16 +35,19 @@
         <% end %>
 
     
-        <% if h.is_a_payment == true %>
-    
-    made a <span class="badge badge-success">payment</span> of $
-    <% else %>
-    <span class="badge badge-warning">lent</span> $
-    <% end %>
+        <% if h.is_a_payment == true %>    
+            made a <span class="badge badge-success">payment</span> of $
+            <% else %>
+            <span class="badge badge-warning">lent</span> $
+        <% end %>
         <%= h.amount %>
         to
-        <%= h.debtor.username %>
-    
+        
+        <% if h.debtor.username == @user.username %>
+            you
+        <% else %>
+            <%= h.debtor.username %>
+        <% end %>
         <% if h.is_a_payment == true %>
             <a href="#" id="<%= h.id %>" class="payment" data-list-shown="false">Payment id: <%= h.id %></a>
         <% else %>
@@ -55,8 +58,6 @@
     <% end %>
 
 </ul>
-
-<br>
 <br>
 
 <!-- Templates -->

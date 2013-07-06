@@ -149,20 +149,24 @@ class User < ActiveRecord::Base
   
   def get_payment_history_with(other_user)
     payment_history = []
+    self.money_borrowed = 0
+    self.money_lent = 0
     
     self.debts.each do |debt|
       payment_history.push(debt) if debt.creditor_id == other_user.id
+      self.money_borrowed += debt.amount
     end
     
     self.credits.each do |credit|
       payment_history.push(credit) if credit.debtor_id == other_user.id
+      self.money_lent += credit.amount
     end
     
-    self.payments_sent.each do |payment| # double check this one!
+    self.payments_sent.each do |payment|
       payment_history.push(payment) if payment.debtor_id == other_user.id
     end   
     
-    self.payments_received.each do |payment| # double check this one too!
+    self.payments_received.each do |payment|
       payment_history.push(payment) if payment.creditor_id == other_user.id
     end
     

@@ -4,7 +4,7 @@
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
     
     <select name="debt[debtor_id]">
-        <option value="">Choose Friend You Want to Pay: </option>
+        <option value="">Friend You Want to Pay</option>
         <% @user.friends.each do |friend| %>   
           <option value="<%= friend.id %>"><%= friend.username %></option>
         <% end %>
@@ -36,12 +36,14 @@ You have no outstanding debts, but you are free to make payments!
     <% @user.friends.each do |friend| %>
         <% if @user.calculate_debt_to(friend) > 0 %>
             <%= "You owe #{friend.username}: $#{@user.calculate_debt_to(friend)}" %>
+            <br>
         <% end %>
     <% end %>
     
     <% @user.inverse_friends.each do |friend| %>
         <% if @user.calculate_debt_to(friend) > 0 %>
             <%= "You owe #{friend.username}: $#{@user.calculate_debt_to(friend)}" %>
+            <br>
         <% end %>    
     <% end %>
    
