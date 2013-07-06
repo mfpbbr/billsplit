@@ -3,7 +3,7 @@
 <form class="bill-form" action="<%= debts_url %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
     
-    <select name="debt[debtor_id]">
+    <select name="debt[][debtor_id]">
         <option value="">Friend You Want to Pay</option>
         <% @user.friends.each do |friend| %>   
           <option value="<%= friend.id %>"><%= friend.username %></option>
@@ -14,12 +14,12 @@
         <% end %>
     </select>
     <br>
-    <input type="text" id="description" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
+    <input type="text" class="description" name="debt[][memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
     <br>
-    <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
+    <input type="number" class="amount" name="debt[][amount]" value="<%= @debt.amount %>" placeholder="Amount">
     <br>
     <br>
-    <button class="add-payment btn btn-primary">Add Payment (not working yet)</button>
+    <button class="add-payment btn btn-primary">Add Payment</button>
     <br>
     <br>
     <input type="submit" class="btn btn-danger" value="Submit">
@@ -58,10 +58,8 @@ You have no outstanding debts, but you are free to make payments!
 
 <script type="text/html" id="payFriend">
 
-<form class="additional-payment" action="<%= debts_url %>" method="post">
-    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-    
-    <select name="debt[debtor_id]">
+<div>
+    <select name="debt[][debtor_id]">
         <option value="">Choose Friend You Want to Pay: </option>
         <% @user.friends.each do |friend| %>   
           <option value="<%= friend.id %>"><%= friend.username %></option>
@@ -72,10 +70,11 @@ You have no outstanding debts, but you are free to make payments!
         <% end %>
     </select>
     <br>
-    <input type="text" id="description" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
+    <input type="text" class="description" name="debt[][memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
     <br>
-    <input type="number" id="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
+    <input type="number" class="amount" name="debt[][amount]" value="<%= @debt.amount %>" placeholder="Amount">
     <button class="remove-payment btn btn-warning">Cancel this Payment</button>
+    </div>
 </script>
 
 <!-- JavaScript -->

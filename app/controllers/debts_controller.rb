@@ -8,18 +8,29 @@ class DebtsController < ApplicationController
   
   def create
     # render :json => params[:debt]
-    @debt = Debt.new(params[:debt])
     
-    @debt.is_a_payment = true
-    @debt.creditor_id = current_user.id
-    
-    if @debt.save!
-      flash[:notice] = "Successful payment."
-      redirect_to debt_url(@debt)
-    else
-      flash[:notice] = "Unable to submit payment."
-      render :payment
+    params[:debt].each do |attrs|
+      debt = Debt.new(attrs)
+      debt.is_a_payment = true
+      debt.creditor_id = current_user.id
+      debt.save!
     end
+    
+    flash[:notice] = "#{params[:debt].length} payments submitted!"
+    
+    redirect_to bills_url
+    # @debt = Debt.new(params[:debt])
+    # 
+    # @debt.is_a_payment = true
+    # @debt.creditor_id = current_user.id
+    # 
+    # if @debt.save!
+    #   flash[:notice] = "Successful payment."
+    #   redirect_to debt_url(@debt)
+    # else
+    #   flash[:notice] = "Unable to submit payment."
+    #   render :payment
+    # end
   end
   
   def show
