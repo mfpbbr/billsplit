@@ -93,16 +93,24 @@
            var userIdArray = [];
            var paidLength = 0;
            var shouldHavePaidLength = 0;
+           var invalidInput = false;
                       
            $.each($(".paid"), function() {
-               inputTotal += parseInt($(this).val());
-               if ($(this).val() != "") {
-                   paidLength += 1;
+               if ($(this).val() == "" || parseInt($(this).val()) < 0) {
+                   alert("Invalid number input.");
+                   event.preventDefault();
+                   invalidInput = true;
+                   return;
                }
+               inputTotal += parseInt($(this).val());
            });
+           if (invalidInput) {
+               return;
+           }
            
            $.each($(".should-have-paid"), function() {
                inputShouldHavePaid += parseInt($(this).val());
+               
                if ($(this).val() != "") {
                    shouldHavePaidLength += 1;
                }
