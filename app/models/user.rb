@@ -4,8 +4,8 @@ class User < ActiveRecord::Base
   attr_accessible :password, :username, :email
   attr_reader :password
 
-  validates :username, :password_digest, :presence => true
-  validates :email, :uniqueness => true
+  validates :username, :email, :password_digest, :presence => true
+  validates :username, :email, :uniqueness => true
   validates :password, :length => { :minimum => 3 }
   
   has_many :friendships
@@ -29,11 +29,9 @@ class User < ActiveRecord::Base
 
   has_many :debtors,
     :through => :credits
-    # :source => :debtor
     
   has_many :creditors, 
     :through => :debts
-    # :source => :creditor
 
   has_many :bills, 
     :through => :debts,
@@ -152,14 +150,18 @@ class User < ActiveRecord::Base
     self.money_borrowed = 0
     self.money_lent = 0
     
-    self.debts.each do |debt|
-      payment_history.push(debt) if debt.creditor_id == other_user.id
-      self.money_borrowed += debt.amount
+    self.debts.each do |debt| # this and the next loop were edited for the debt bar function
+      if debt.creditor_id == other_user.id && debt.is_a_payment != true
+        payment_history.push(debt) 
+        self.money_borrowed += debt.amount
+      end
     end
     
     self.credits.each do |credit|
-      payment_history.push(credit) if credit.debtor_id == other_user.id
-      self.money_lent += credit.amount
+      if credit.debtor_id == other_user.id && credit.is_a_payment != true
+        payment_history.push(credit) 
+        self.money_lent += credit.amount
+      end
     end
     
     self.payments_sent.each do |payment|

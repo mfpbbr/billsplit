@@ -1,9 +1,14 @@
-<h1> Sign Up</h1>
+<br>
+<br>
+<p class="lead"><strong>Split Your Bill</strong> is free and always will be.
+    <br>
+    Join today!</p>
+<h4>Create an Account</h4>
 
-<form action="/users" method="post">
-  <label>Username: <input type="text" name="user[username]" value="<%= @user.username %>" /></label>
-  <label>Email: <input type="text" name="user[email]" /></label>
-  <label>Password: <input type="password" name="user[password]" /></label>
+<form action="/users" class="form-horizontal" method="post">
+  <label>Username: &emsp;<input type="text" name="user[username]" value="<%= @user.username %>" /></label>
+  <label>Email: &emsp;&emsp;&emsp;&nbsp;&nbsp;<input type="text" name="user[email]" /></label>
+  <label>Password: &emsp;<input type="password" name="user[password]" /></label>
   <input type="submit" class="btn btn-danger" value="Sign Up" />
 </form>
 

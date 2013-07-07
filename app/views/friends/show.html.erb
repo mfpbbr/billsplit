@@ -5,10 +5,10 @@
 <div id='friend-debt'>
 <h2>Your expenses with <%= @friend.username %></h2>
 <h3><%= @debt_to_friend > 0 ? "You owe #{@friend.username}: $" : "#{@friend.username} owes you: $" %>
-    <%= @debt_to_friend.abs %>
+    <span id="debt-to-friend"><%= @debt_to_friend.abs %></span>
 
     <% if @debt_to_friend > 0 %>
-      <button class="pay-friend btn btn-success" type="button" data-list-shown="false">Pay Friend</button>
+      <button class="pay-friend-btn btn btn-success" type="button" data-list-shown="false">Pay Friend</button>
     <% end %>
     
     <% if @debt_to_friend < 0 %>
@@ -23,13 +23,14 @@
   <div class="bar bar-warning" style="width: <%= @yellow %>%;"></div>
   <div class="bar bar-danger" style="width: <%= @red %>%;"></div>
 </div>
-
+<h6>Friend History Graph
+    <br>Red: money you owe, Green: money you have lent, Yellow: money you have borrowed and repaid</h6>
 <ul id="expenses">
     <% @history.each do |h| %>
     <li>
         <strong><%= h.created_at.strftime("%b %d") %></strong>:
         <% if h.creditor.username == @user.username %>
-        <span class="label label-important">You</span>
+        <strong>You</strong>
         <% else %>
         <%= h.creditor.username %> 
         <% end %>
@@ -69,13 +70,13 @@
       <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
       
       Payment to: <%= @friend.username %>
-      <input type="hidden" name="debt[debtor_id]" value="<%= @friend.id %>">
+      <input type="hidden" id="friend-id" name="debt[][debtor_id]" value="<%= @friend.id %>">
       <br>
-      <input type="text" id="description" name="debt[memo]" placeholder="Reason for Payment">
+      <input type="text" id="description" name="debt[][memo]" placeholder="Reason for Payment">
       <br>
-      <input type="number" id="amount" name="debt[amount]" placeholder="Amount">
+      <input type="number" id="amount" name="debt[][amount]" placeholder="Amount">
       <br>
-      <input type="submit" class="btn btn-danger" value="Submit Payment">
+      <input type="submit" class="submit-payment btn btn-danger" value="Submit Payment">
   </form>
   </div>
 </script>
@@ -106,12 +107,12 @@ $(document).ready(function() {
         }
     });
     
-    $(".pay-friend").click(function(event) {
+    $(".pay-friend-btn").click(function(event) {
         event.preventDefault();   
         
         $(this).text(function(i, text){
             return text === "Pay Friend" ? "Cancel Payment" : "Pay Friend";
-        })     
+        });     
         
         if ($(event.target).attr("data-list-shown") === "false") {
           $(event.target).attr("data-list-shown", "true");
@@ -121,6 +122,42 @@ $(document).ready(function() {
             $(event.target).attr("data-list-shown", "false");
             $(".payment-form").empty();
         }
+        
+        $(".submit-payment").click(function(event) {
+            event.preventDefault();
+           var debtor = $("#friend-id").val();
+           var amount = $("#amount").val();
+           var description = $("#description").val();
+           
+           var payment = $.post( "/debts", {debt: {debtor_id: debtor, amount: amount, memo: description} });
+ 
+           payment.done(function( data ) {
+             console.log(data);
+             
+             var $div = $("<div>", {
+                 class: "alert alert-success",
+                 text: "Payment submitted."
+             });
+                         
+             var $closeButton = $("<button>", {
+                 type: "button",
+                 class: "close",
+                 text: "x",
+                 "data-dismiss": "alert"
+             });
+             
+             $div.append($closeButton);
+             $('#friend-debt').append($div);
+             
+             $(".payment-form").empty();
+             
+             $(".pay-friend-btn").attr("data-list-shown", "false");
+          $(".pay-friend-btn").html("Pay Friend"); 
+             var newDebt = parseInt($("#debt-to-friend").text()) - data.amount;
+             $("#debt-to-friend").text(newDebt);
+           });
+           
+        });
     });
     
     $(".nudge-friend").click(function(event) {

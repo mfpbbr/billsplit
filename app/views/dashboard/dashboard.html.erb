@@ -5,7 +5,7 @@
     <div class="alert alert-error">
         <button type="button" class="close" data-id="<%= nudge.id %>" data-dismiss="alert">&times;</button>
       You have been nudged by <%= nudge.user.username %>
-      <button type="button" class="pay-friend btn btn-success" data-list-shown="false">Pay Up</button>
+      <button type="button" class="pay-friend-btn btn btn-success" data-id="<%=nudge.id %>" data-list-shown="false">Pay Up</button>
     </div>
 <% end %>
 <div id="friend-debt">
@@ -44,7 +44,6 @@ You are owed: $<%= @user.money_owed_by_friends %>
 <!-- Templates -->
 
 <script type="text/html" id="payFriend">
-  <div class='pay-friend'>
   
   <form class="payment-form" action="<%= debts_url %>" method="post">
       <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
@@ -56,7 +55,7 @@ You are owed: $<%= @user.money_owed_by_friends %>
       <br>
       <input type="submit" class="btn btn-danger" value="Submit Payment">
   </form>
-  </div>
+
 </script>
 
 <!-- Javascript -->
@@ -99,7 +98,7 @@ $(document).ready(function() {
       });
    });
    
-   $(".pay-friend").click(function(event) {
+   $(".pay-friend-btn").click(function(event) {
        event.preventDefault();   
        
        $(this).text(function(i, text){
@@ -108,19 +107,23 @@ $(document).ready(function() {
        
        if ($(event.target).attr("data-list-shown") === "false") {
          $(event.target).attr("data-list-shown", "true");
-         payFriend();
+         payFriend($(event.target).attr("data-id"));
          
        } else {
            $(event.target).attr("data-list-shown", "false");
-           $(".payment-form").empty();
+           var formId = $(event.target).attr("data-id")
+           $("." + formId).empty();
        }
    });
    
-   var payFriend = function() {
+   var payFriend = function(id) {
 
        var templateFunction = _.template($("#payFriend").html());
        var renderedContent = templateFunction();
-       $("#friend-debt").after(renderedContent);
+       var $nudgeIdDiv = $("<div>").attr("class", id);
+       $nudgeIdDiv.append(renderedContent)
+        
+       $("#friend-debt").after($nudgeIdDiv);
        
        $(".payment-form").submit(function(event) {        
            if ($("#description").val() == "") {

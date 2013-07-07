@@ -23,7 +23,9 @@
               <li><a href="/debts/new">Make a Payment</a></li>
             <li><a href="/bills/new">Add a Bill</a></li>
               <li><a href="/bills">All Expenses</a></li>
+            <li><%= button_to "Logout", session_path, :method => "delete", :class => "btn btn-info" %></li>
             </ul>
+                
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -31,11 +33,6 @@
   <br>
   <%= flash[:notice] if flash[:notice] %>
   <%= yield %>
-
-
-  <div>
-    <%= button_to "Logout", session_path, :method => "delete", :class => "btn btn-info" %>
-  </div>
   
   <center><h6><a href="mailto:beldac@gmail.com?Subject=BillSplit" target="_top">
     Feedback</a></h6></center>

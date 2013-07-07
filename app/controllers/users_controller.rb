@@ -22,8 +22,7 @@ class UsersController < ApplicationController
       login_user(@user)
       redirect_to root_url
     else
-      flash.now[:errors] ||= []
-      flash.now[:errors] << @user.errors.full_messages.to_sentence
+      flash[:notice] = "Please choose a different username and/or email."
       render :new
     end
   end

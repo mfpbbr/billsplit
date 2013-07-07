@@ -55,8 +55,7 @@ class BillsController < ApplicationController
     @user = current_user
     @bill.debts.destroy_all
     @bill.guests.destroy_all
-
-    # render :json => params    
+   
     if @bill.update_attributes(:description => params[:bill][:description], :total_amount => params[:bill][:total_amount])
       flash[:notice] = "Bill successfully updated."
       Bill.calculate(params[:id], params[:bill][:total_amount].to_i, params[:bill][:guests])

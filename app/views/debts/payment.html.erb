@@ -1,35 +1,12 @@
-<h2>Payment Page</h2>
-
-<form class="bill-form" action="<%= debts_url %>" method="post">
-    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
-    
-    <select name="debt[][debtor_id]">
-        <option value="">Friend You Want to Pay</option>
-        <% @user.friends.each do |friend| %>   
-          <option value="<%= friend.id %>"><%= friend.username %></option>
-        <% end %>
-        
-        <% @user.inverse_friends.each do |inverse_friend| %>   
-          <option value="<%= inverse_friend.id %>"><%= inverse_friend.username %></option>
-        <% end %>
-    </select>
-    <br>
-    <input type="text" class="description" name="debt[][memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
-    <br>
-    <input type="number" class="amount" name="debt[][amount]" value="<%= @debt.amount %>" placeholder="Amount">
-    <br>
-    <br>
-    <button class="add-payment btn btn-primary">Add Payment</button>
-    <br>
-    <br>
-    <input type="submit" class="btn btn-danger" value="Submit">
-</form>
+<h3>Pay Your Friends</h3>
 
 <% if @user.money_owed_to_friends > 0 %>
 <h6><a href="#" class="question" data-list-shown="false">What do I owe?</a></h6>
 <% else %>
 You have no outstanding debts, but you are free to make payments!
+<br>
 <% end %>
+<br>
 
 <div class="debt-list" style="display:none">
 
@@ -46,20 +23,46 @@ You have no outstanding debts, but you are free to make payments!
             <br>
         <% end %>    
     <% end %>
-   
+    <br>
+    <br>
 </div>
+
+<form class="bill-form" action="<%= debts_url %>" method="post">
+    <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+    
+    <select name="debt[][debtor_id]" class="friend-to-pay">
+        <option value="">Friend You Want to Pay</option>
+        <% @user.friends.each do |friend| %>   
+          <option value="<%= friend.id %>"><%= friend.username %></option>
+        <% end %>
+        
+        <% @user.inverse_friends.each do |inverse_friend| %>   
+          <option value="<%= inverse_friend.id %>"><%= inverse_friend.username %></option>
+        <% end %>
+    </select>
+    <br>
+    <input type="text" class="description" name="debt[][memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
+    <br>
+    <input type="number" class="amount" name="debt[][amount]" value="<%= @debt.amount %>" placeholder="Amount">
+    <br>
+    <br>
+    <button class="add-payment btn btn-primary">Pay Another Friend</button>
+    <br>
+    <br>
+    <input type="submit" class="btn btn-danger" value="Submit">
+</form>
 
 <br>
 <%= link_to "Back to Dashboard (do not make a new payment)", root_url %>
 <br>
 <br>
 
-<!-- Templates NOTE: DO I WANT TO BE ABLE TO MAKE MORE THAN ONE PAYMENT AT ONCE? -->
+<!-- Templates -->
 
 <script type="text/html" id="payFriend">
 
 <div>
-    <select name="debt[][debtor_id]">
+    <select name="debt[][debtor_id]" class="friend-to-pay">
         <option value="">Choose Friend You Want to Pay: </option>
         <% @user.friends.each do |friend| %>   
           <option value="<%= friend.id %>"><%= friend.username %></option>
@@ -105,16 +108,58 @@ You have no outstanding debts, but you are free to make payments!
               $(event.target).parent().empty(); 
           });
         });
-       
+               
         $(".bill-form").submit(function(event) {
-            if ($("select option:selected").val() == "") {                
-                alert("Please select a friend to pay.");
-                event.preventDefault();
-            } else if ($("#description").val() == "") {
-                alert("Please enter a reason for payment.");
-                event.preventDefault();
-            } else if ($("#amount").val() == "") {
-                alert("Please enter amount.");
+            var friendsToPay = [];
+            var descriptions = [];
+            var amounts = [];
+            var invalidInput = false;
+            
+            $.each($(".friend-to-pay"), function() {
+                if ($(this).val() == "") {
+                    event.preventDefault();
+                    invalidInput = true;
+                    alert("Please select a friend to pay.");
+                    return;
+                }
+                
+                friendsToPay.push($(this).val());
+            });
+            
+            $.each($(".description"), function() {
+                if ($(this).val() == "") {
+                    event.preventDefault();
+                    invalidInput = true;
+                    alert("Please enter a reason for payment.");
+                    return;
+                }
+                
+                descriptions.push($(this).val());
+            });
+            
+            if (invalidInput == true) {
+                return;
+            }
+            
+            $.each($(".amount"), function() {
+                if ($(this).val() == "" || parseInt($(this).val()) < 0) {
+                    event.preventDefault();
+                    invalidInput = true;
+                    alert("Invalid number input.");
+                    return;
+                }
+                amounts.push($(this).val());
+            });
+            
+            if (invalidInput == true) {
+                return;
+            }
+            
+            if (friendsToPay.length != descriptions.length ||
+                descriptions.length != amounts.length ||
+                friendsToPay.length != amounts.length ||
+                friendsToPay.length != _.uniq(friendsToPay).length) {
+                alert("Please have all fields complete for every payment.");
                 event.preventDefault();
             }
         });

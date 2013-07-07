@@ -17,7 +17,7 @@
     <strong><%= h.created_at.strftime("%b %d") %></strong>:
     
     <% if h.creditor.username == @user.username %>
-    <span class="label label-important">You</span>
+    <strong>You</strong>
     <% else %>
     <%= h.creditor.username %> 
     <% end %>

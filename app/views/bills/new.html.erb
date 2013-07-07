@@ -1,4 +1,4 @@
-<h2>Add Bill</h2>
+<h3>Add Bill</h3>
 
 <form class="bill-form" id="bill-form" action="<%= bills_url %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
@@ -103,18 +103,28 @@
                    return;
                }
                inputTotal += parseInt($(this).val());
+               paidLength += 1;
            });
-           if (invalidInput) {
+           
+           if (invalidInput == true) {
                return;
            }
            
            $.each($(".should-have-paid"), function() {
-               inputShouldHavePaid += parseInt($(this).val());
-               
-               if ($(this).val() != "") {
-                   shouldHavePaidLength += 1;
+               if ($(this).val() == "" || parseInt($(this).val()) < 0) {
+                   alert("Invalid number input.");
+                   event.preventDefault();
+                   invalidInput = true;
+                   return;
                }
+               
+               inputShouldHavePaid += parseInt($(this).val());
+               shouldHavePaidLength += 1;
            });
+           
+           if (invalidInput == true) {
+               return;
+           }
                       
            $.each($(".guest-entry select option:selected"), function() {
                if ($(this).val() != "") {

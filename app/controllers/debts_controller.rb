@@ -6,27 +6,31 @@ class DebtsController < ApplicationController
     render :payment
   end
   
-  def create
-    # render :json => params[:debt]
-    
-    params[:debt].each do |attrs|
-      debt = Debt.new(attrs)
-      debt.is_a_payment = true
-      debt.creditor_id = current_user.id
-      debt.save!
-    end
-    
-    flash[:notice] = "#{params[:debt].length} payments submitted!"
-    
-    redirect_to bills_url
-    # @debt = Debt.new(params[:debt])
+  def create    
+    # params[:debt].each do |attrs|
+    #   debt = Debt.new(attrs)
+    #   debt.is_a_payment = true
+    #   debt.creditor_id = current_user.id
+    #   debt.save!
+    # end
     # 
-    # @debt.is_a_payment = true
-    # @debt.creditor_id = current_user.id
+    # flash[:notice] = "#{params[:debt].length} payments submitted!"
     # 
+    # redirect_to bills_url
+    
+    @debt = Debt.new(params[:debt])
+    @debt.is_a_payment = true
+    @debt.creditor_id = current_user.id
+    @debt.save!
+    
+    render :json => @debt     
     # if @debt.save!
-    #   flash[:notice] = "Successful payment."
-    #   redirect_to debt_url(@debt)
+    # 
+    #   respond_to do |format|
+    #     format.html { render :show }
+    #     format.json { render :json => @debt }
+    #   end
+    # 
     # else
     #   flash[:notice] = "Unable to submit payment."
     #   render :payment
@@ -38,6 +42,3 @@ class DebtsController < ApplicationController
     render :show
   end
 end
-
-
-#iterate over the payments that get sent out
