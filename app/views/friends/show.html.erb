@@ -23,8 +23,8 @@
   <div class="bar bar-warning" style="width: <%= @yellow %>%;"></div>
   <div class="bar bar-danger" style="width: <%= @red %>%;"></div>
 </div>
-<h6>Friend History Graph
-    <br>Red: money you owe, Green: money you have lent, Yellow: money you have borrowed and repaid</h6>
+<center><strong>Friend History Graph</strong> Red: Money Owed Green: Money Lent Yellow: Money You Repaid</center><br>
+
 <ul id="expenses">
     <% @history.each do |h| %>
     <li>
@@ -89,23 +89,6 @@ $(document).ready(function() {
 
     HISTORY = JSON.parse($("#listItems").html());
     
-    $(".payment").click(function(event) {
-        event.preventDefault();
-        var payment_id = $(event.target).attr("id");
-
-        for(var i = 0; i < HISTORY.length; i++) {
-            if(HISTORY[i].id == payment_id) {
-                var result = HISTORY[i];
-                break;
-            }
-        }
-
-        if ($(event.target).attr("data-list-shown") === "false") {
-          show(event, result);
-        } else {
-          hide(event, result);
-        }
-    });
     
     $(".pay-friend-btn").click(function(event) {
         event.preventDefault();   
@@ -128,11 +111,26 @@ $(document).ready(function() {
            var debtor = $("#friend-id").val();
            var amount = $("#amount").val();
            var description = $("#description").val();
+           var invalidInput = false;
+           
+           if (description == "") {
+               alert("Please enter a description.");
+               invalidInput = true;
+               event.preventDefault();
+           } else if (amount == "" || parseInt(amount < 0)) {
+               alert("Invalid number input.");
+               invalidInput = true;
+               event.preventDefault();
+           }
+           
+           if (invalidInput == true) {
+               return;
+           }
            
            var payment = $.post( "/debts.json", {debt: {debtor_id: debtor, amount: amount, memo: description} });
  
            payment.done(function( data ) {
-             console.log(data);
+             console.log(data.amount);
              
              var $div = $("<div>", {
                  class: "alert alert-success",
@@ -155,11 +153,44 @@ $(document).ready(function() {
           $(".pay-friend-btn").html("Pay Friend"); 
              var newDebt = parseInt($("#debt-to-friend").text()) - data.amount;
              $("#debt-to-friend").text(newDebt);
-           });
+             
+             var $newPayment = $("<li>").html("<strong>Just Now: You</strong> made a payment of $" + data.amount + " ");
+             
+             var $newPaymentLink = $("<a>", {
+                 href: "/debts/" + data.id,
+                 id: data.id,
+                 class: "payment",
+                 "data-list-shown": "false",
+                 text: "Payment id: " + data.id 
+             });
+             
+             $newPayment.append($newPaymentLink);
+             
+             $("#expenses").prepend($newPayment);
            
+           });
+                      
         });
     });
     
+    $(".payment").click(function(event) {
+        event.preventDefault();
+        var payment_id = $(event.target).attr("id");
+
+        for(var i = 0; i < HISTORY.length; i++) {
+            if(HISTORY[i].id == payment_id) {
+                var result = HISTORY[i];
+                break;
+            }
+        }
+
+        if ($(event.target).attr("data-list-shown") === "false") {
+          show(event, result);
+        } else {
+          hide(event, result);
+        }
+    });
+        
     $(".nudge-friend").click(function(event) {
        event.preventDefault();
        var friendId = $(event.target).attr("data-id");
@@ -191,17 +222,7 @@ $(document).ready(function() {
 
         var templateFunction = _.template($("#payFriend").html());
         var renderedContent = templateFunction();
-        $("#friend-debt").after(renderedContent);
-        
-        $(".payment-form").submit(function(event) {        
-            if ($("#description").val() == "") {
-                alert("Please enter a description.");
-                event.preventDefault();
-            } else if ($("#amount").val() == "") {
-                alert("Please enter amount.");
-                event.preventDefault();
-            }
-        });   
+        $("#friend-debt").after(renderedContent);  
     };
     
     $(".bill").click(function(event) {
