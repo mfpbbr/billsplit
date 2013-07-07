@@ -53,7 +53,7 @@ You are owed: $<%= @user.money_owed_by_friends %>
       <br>
       <input type="number" id="amount" name="debt[amount]" placeholder="Amount">
       <br>
-      <input type="submit" class="btn btn-danger" value="Submit Payment">
+      <input type="submit" class="btn btn-danger submit-payment" value="Submit Payment">
   </form>
 
 </script>
@@ -114,26 +114,65 @@ $(document).ready(function() {
            var formId = $(event.target).attr("data-id")
            $("." + formId).empty();
        }
+       
+       $(".submit-payment").click(function(event) {
+          event.preventDefault();
+          var amount = $("#amount").val();
+          var description = $("#description").val();
+          var invalidInput = false;
+          
+          // need to find out the debtor_id, and also tie the payments to nudges...everything needs to be tied by the nudge id
+          var debtor = 3;
+          
+          if (description == "") {
+              alert("Please enter a description.");
+              invalidInput = true;
+              event.preventDefault();
+          } else if (amount == "" || parseInt(amount < 0)) {
+              alert("Invalid number input.");
+              invalidInput = true;
+              event.preventDefault();
+          }
+          
+          if (invalidInput == true) {
+              return;
+          }
+          
+          var payment = $.post( "/debts.json", {debt: {debtor_id: debtor, amount: amount, memo: description} });
+
+          payment.done(function( data ) {
+                var $div = $("<div>", {
+                class: "alert alert-success",
+                text: "Payment submitted."
+            });
+                        
+            var $closeButton = $("<button>", {
+                type: "button",
+                class: "close",
+                text: "x",
+                "data-dismiss": "alert"
+            });
+            
+            $div.append($closeButton);
+            $('#friend-debt').append($div);
+            
+            $(".payment-form").empty();
+  $(".pay-friend-btn").remove();          
+//            $(".pay-friend-btn").attr("data-list-shown", "false");
+//            $(".pay-friend-btn").html("Pay Friend"); 
+          });
+                     
+       });
+              
    });
    
    var payFriend = function(id) {
-
        var templateFunction = _.template($("#payFriend").html());
        var renderedContent = templateFunction();
        var $nudgeIdDiv = $("<div>").attr("class", id);
        $nudgeIdDiv.append(renderedContent)
         
        $("#friend-debt").after($nudgeIdDiv);
-       
-       $(".payment-form").submit(function(event) {        
-           if ($("#description").val() == "") {
-               alert("Please enter a description.");
-               event.preventDefault();
-           } else if ($("#amount").val() == "") {
-               alert("Please enter amount.");
-               event.preventDefault();
-           }
-       });   
    };
    
    var show = function(event, userInfo) {

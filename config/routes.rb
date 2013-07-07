@@ -4,7 +4,7 @@ SessionsTemplate::Application.routes.draw do
 
   resource :dashboard, :only => :dashboard
 
-  resources :debts, :only => [:create, :new, :show, :update]
+  resources :debts, :only => [:create, :new, :show]
   
   resources :friends, :only => :show do 
     resources :nudges, :only => [:create]
