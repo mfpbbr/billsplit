@@ -9,7 +9,7 @@ class FriendsController < ApplicationController
     @red = @debt_to_friend < 0 ? 0 : (@debt_to_friend.to_f / money_total) * 100 
     @green = (@user.money_lent.to_f / money_total) * 100
     @yellow = 100 - (@red + @green)
-
+    
     render :show
   end
 end

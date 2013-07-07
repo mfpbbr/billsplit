@@ -5,7 +5,7 @@
     <div class="alert alert-error">
         <button type="button" class="close" data-id="<%= nudge.id %>" data-dismiss="alert">&times;</button>
       You have been nudged by <%= nudge.user.username %>
-      <button type="button" class="pay-friend-btn btn btn-success" data-id="<%=nudge.id %>" data-list-shown="false">Pay Up</button>
+      <button type="button" class="pay-friend-btn btn btn-success" id="friend-<%= nudge.user_id %>" data-id="<%=nudge.id %>" data-list-shown="false">Pay Up</button>
     </div>
 <% end %>
 <div id="friend-debt">

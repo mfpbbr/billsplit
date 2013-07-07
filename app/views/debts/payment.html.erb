@@ -27,10 +27,13 @@ You have no outstanding debts, but you are free to make payments!
     <br>
 </div>
 
+<div class="notices">
+</div>
+
 <form class="bill-form" action="<%= debts_url %>" method="post">
     <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
     
-    <select name="debt[][debtor_id]" class="friend-to-pay">
+    <select name="debt[debtor_id]" class="friend-to-pay">
         <option value="">Friend You Want to Pay</option>
         <% @user.friends.each do |friend| %>   
           <option value="<%= friend.id %>"><%= friend.username %></option>
@@ -41,15 +44,13 @@ You have no outstanding debts, but you are free to make payments!
         <% end %>
     </select>
     <br>
-    <input type="text" class="description" name="debt[][memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
+    <input type="text" class="description" name="debt[memo]" value="<%= @debt.memo %>" placeholder="Reason for Payment">
     <br>
-    <input type="number" class="amount" name="debt[][amount]" value="<%= @debt.amount %>" placeholder="Amount">
-    <br>
-    <br>
-    <button class="add-payment btn btn-primary">Pay Another Friend</button>
+    <input type="number" class="amount" name="debt[amount]" value="<%= @debt.amount %>" placeholder="Amount">
     <br>
     <br>
-    <input type="submit" class="btn btn-danger" value="Submit">
+    <!-- <button class="add-payment btn btn-primary">Pay Another Friend</button> -->
+    <input type="submit" class="btn btn-danger submit-payment" value="Submit">
 </form>
 
 <br>

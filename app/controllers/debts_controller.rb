@@ -23,7 +23,11 @@ class DebtsController < ApplicationController
     @debt.creditor_id = current_user.id
     @debt.save!
     
-    render :json => @debt     
+    respond_to do |format|
+      format.html { render :show }
+      format.json { render :json => @debt }
+    end
+          
     # if @debt.save!
     # 
     #   respond_to do |format|

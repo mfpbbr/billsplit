@@ -129,7 +129,7 @@ $(document).ready(function() {
            var amount = $("#amount").val();
            var description = $("#description").val();
            
-           var payment = $.post( "/debts", {debt: {debtor_id: debtor, amount: amount, memo: description} });
+           var payment = $.post( "/debts.json", {debt: {debtor_id: debtor, amount: amount, memo: description} });
  
            payment.done(function( data ) {
              console.log(data);
