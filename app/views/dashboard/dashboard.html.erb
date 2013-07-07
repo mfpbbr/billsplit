@@ -117,6 +117,7 @@ $(document).ready(function() {
        
        $(".submit-payment").click(function(event) {
           event.preventDefault();
+          
           var amount = $("#amount").val();
           var description = $("#description").val();
           var invalidInput = false;
@@ -155,10 +156,9 @@ $(document).ready(function() {
             $div.append($closeButton);
             $('#friend-debt').append($div);
             
-            $(".payment-form").empty();
-  $(".pay-friend-btn").remove();          
-//            $(".pay-friend-btn").attr("data-list-shown", "false");
-//            $(".pay-friend-btn").html("Pay Friend"); 
+           $(".payment-form").empty();
+           $(".pay-friend-btn").attr("data-list-shown", "false");
+           $(".pay-friend-btn").html("Pay Friend"); 
           });
                      
        });
