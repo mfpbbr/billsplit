@@ -1,15 +1,16 @@
 <h2><%= @user.username %>'s Dashboard</h2>
 <br>
 
+<div id="friend-debt">
+</div>
+
 <% @user.received_nudges.each do |nudge| %>
-    <div class="alert alert-error">
+    <div class="alert alert-error nudge-<%= nudge.id %>">
         <button type="button" class="close" data-id="<%= nudge.id %>" data-dismiss="alert">&times;</button>
       You have been nudged by <%= nudge.user.username %>
       <button type="button" class="pay-friend-btn btn btn-success" id="<%= nudge.user_id %>" data-id="<%=nudge.id %>" data-list-shown="false">Pay Up</button>
     </div>
 <% end %>
-<div id="friend-debt">
-</div>
 
 <% if @user.settled_up? %>
 <span class="label label-success">Congrats!</span><strong> You are all settled up.</strong>
@@ -62,10 +63,6 @@ You are owed: $<%= @user.money_owed_by_friends %>
 
 <script type="text/javascript">
 $(document).ready(function() {
-   // $(".add-friend").click(function(event) {
-   //     event.preventDefault();
-   //     console.log("trying to add friend.");
-   // });
    
    $(".user-profile").click(function(event) {
       event.preventDefault();
@@ -117,6 +114,8 @@ $(document).ready(function() {
        
        $(".submit-payment").click(function(event) {
           event.preventDefault();
+          console.log($(event.target).parent().parent());
+          var divName = $(event.target).parent().parent().attr("class");
           
           var amount = $("#amount").val();
           var description = $("#description").val();
@@ -139,7 +138,7 @@ $(document).ready(function() {
           }
           
           var payment = $.post( "/debts.json", {debt: {debtor_id: debtor, amount: amount, memo: description} });
-
+          
           payment.done(function( data ) {
                 var $div = $("<div>", {
                 class: "alert alert-success",
@@ -154,13 +153,23 @@ $(document).ready(function() {
             });
             
             $div.append($closeButton);
+            
             $('#friend-debt').append($div);
             var newDebt = parseInt($("#debt-to-friends").text()) - data.amount;
             $("#debt-to-friends").text(newDebt);
             
-           $(".payment-form").empty();
-           $(".pay-friend-btn").attr("data-list-shown", "false");
-           $(".pay-friend-btn").html("Pay Friend"); 
+           $(event.target).parent().remove();
+           
+           $.ajax({
+              url: "/nudges/" + divName,
+              type: "delete",
+              success: function() {
+                  console.log("nudge deleted");
+              } 
+           });
+           
+           $(".nudge-" + divName).remove();
+           
           });
                      
        });
@@ -173,7 +182,8 @@ $(document).ready(function() {
        var $nudgeIdDiv = $("<div>").attr("class", id);
        $nudgeIdDiv.attr("id", friendId);
        $nudgeIdDiv.append(renderedContent);
-       $("#friend-debt").after($nudgeIdDiv);
+       // $("#friend-debt").after($nudgeIdDiv);
+       $(".nudge-" + id).append($nudgeIdDiv);
    };
    
    var show = function(event, userInfo) {
