@@ -15,7 +15,7 @@
 <span class="label label-success">Congrats!</span><strong> You are all settled up.</strong>
 <% end %>
 <br>
-You owe: $<%= @user.money_owed_to_friends %>
+You owe: $<span id="debt-to-friends"><%= @user.money_owed_to_friends %></span>
 <br>
 You are owed: $<%= @user.money_owed_by_friends %>
 <br>
@@ -155,6 +155,8 @@ $(document).ready(function() {
             
             $div.append($closeButton);
             $('#friend-debt').append($div);
+            var newDebt = parseInt($("#debt-to-friends").text()) - data.amount;
+            $("#debt-to-friends").text(newDebt);
             
            $(".payment-form").empty();
            $(".pay-friend-btn").attr("data-list-shown", "false");
@@ -175,7 +177,7 @@ $(document).ready(function() {
    };
    
    var show = function(event, userInfo) {
-       var $profile = $("<div>");
+       var $profile = $("<div>").attr("class", "profile-info-div");
        $profile.append("<br>" + userInfo.email + "<br>" + "Member since: " + userInfo.created_at + "<br>");
   
        $(event.target).attr("data-list-shown", "true");
@@ -183,7 +185,8 @@ $(document).ready(function() {
       };
 
    var hide = function(event, UserInfo) {
-     $(event.target).parent().find("div").remove();
+       $(".profile-info-div").remove();
+     // $(event.target).parent().find("div").remove();
      $(event.target).attr("data-list-shown", "false");
    };   
    

@@ -7,7 +7,7 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-    
+<% if logged_in? %>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -23,7 +23,6 @@
               <li><a href="/debts/new">Make a Payment</a></li>
             <li><a href="/bills/new">Add a Bill</a></li>
               <li><a href="/bills">All Expenses</a></li>
-            <li><%= button_to "Logout", session_path, :method => "delete", :class => "btn btn-info" %></li>
             </ul>
                 
           </div><!--/.nav-collapse -->
@@ -31,10 +30,19 @@
       </div>
     </div>
   <br>
+
+<% end %>
+
   <%= flash[:notice] if flash[:notice] %>
   <%= yield %>
   
-  <center><h6><a href="mailto:beldabelda@gmail.com?Subject=BillSplit" target="_top">
-    Contact Us</a></h6></center>
+  
+  <br>
+  <br>
+  <% if logged_in? %>
+  <%= button_to "Logout", session_path, :method => "delete", :class => "btn btn-info" %>
+  <% end %>
+  <h6><a href="mailto:beldabelda@gmail.com?Subject=BillSplit" target="_top">
+    Contact Us</a></h6>
 </body>
 </html>
